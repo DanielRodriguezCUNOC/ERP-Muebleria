@@ -1,8 +1,13 @@
 package com.erp.muebleria.modules.usuarios.domain.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class Rol {
 
     private Long id;

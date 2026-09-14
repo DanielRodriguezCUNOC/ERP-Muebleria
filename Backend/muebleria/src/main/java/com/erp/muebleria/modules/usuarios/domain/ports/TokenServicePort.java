@@ -8,4 +8,6 @@ import com.erp.muebleria.modules.usuarios.domain.entities.Usuario;
 public interface TokenServicePort {
     String generarToken(Usuario usuario);
     void invalidarToken(String token);
+    boolean validarToken(String token);
+    String obtenerUsuarioDelToken(String token);
 }
