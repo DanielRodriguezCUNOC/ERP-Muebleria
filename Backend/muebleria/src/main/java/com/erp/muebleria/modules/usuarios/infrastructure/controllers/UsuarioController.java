@@ -3,12 +3,16 @@ package com.erp.muebleria.modules.usuarios.infrastructure.controllers;
 import com.erp.muebleria.modules.usuarios.application.dto.CrearUsuarioDTO;
 import com.erp.muebleria.modules.usuarios.application.useCases.usuarios.AsignarRolUseCase;
 import com.erp.muebleria.modules.usuarios.application.useCases.usuarios.CrearUsuarioUseCase;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@Tag(name = "Usuarios", description = "Gestión de cuentas de usuario y asignación de roles")
+@SecurityRequirement(name = "BearerAuth")
 public class UsuarioController {
     private final CrearUsuarioUseCase crearUsuarioUseCase;
     private final AsignarRolUseCase asignarRolUseCase;

@@ -3,13 +3,16 @@ package com.erp.muebleria.modules.usuarios.infrastructure.controllers;
 import com.erp.muebleria.modules.usuarios.application.dto.CrearRolDTO;
 import com.erp.muebleria.modules.usuarios.application.useCases.rolesPermisos.AsignarPermisoUseCase;
 import com.erp.muebleria.modules.usuarios.application.useCases.rolesPermisos.CrearRolUseCase;
-import com.erp.muebleria.modules.usuarios.domain.entities.Rol;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/roles")
+@Tag(name = "Rol", description = "Gestión de roles y permisos relacionados a estos roles")
+@SecurityRequirement(name = "BearerAuth")
 public class RolController {
 
     private final CrearRolUseCase crearRolUseCase;
