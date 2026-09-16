@@ -32,7 +32,7 @@ public class CrearUsuarioUseCase {
     public void ejecutar (CrearUsuarioDTO dto) {
         if (usuarioRepository.existePorUsuario(dto.getUsuario())) throw new RuntimeException("El nombre de usuario ya existe");
 
-        Rol rol = rolRepository.bucarPorId(dto.getRolId()).
+        Rol rol = rolRepository.buscarPorId(dto.getRolId()).
                 orElseThrow(() -> new RuntimeException("El rol no existe"));
 
         String hashedPassword = passwordHasher.hash(dto.getPassword());
