@@ -1,7 +1,8 @@
 package com.erp.muebleria.modules.administracion.domain.ports;
 
-import com.erp.muebleria.modules.administracion.domain.models.TopCliente;
+import com.erp.muebleria.modules.administracion.domain.models.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -10,4 +11,10 @@ import java.util.List;
  */
 public interface ReportesGerencialesRepositoryPort {
     List<TopCliente> obtenerTopClientesPorMonto(int limite);
+    List<VentasPorPeriodo> obtenerVentasPorPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<TopProductosMasIngresos> obtenerTopProductosMasIngresos(int limite);
+    List<ResumenVentasPeriodo> obtenerResumenVentasAgrupadoPorPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin, String agrupacion);
+    List<MovimientoProducto> obtenerMovimientosPorProducto(Long productoId);
+    List<ReporteCompra> obtenerComprasPorRangoDeFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<ReporteCompra> obtenerComprasPorProveedor(Long proveedorId);
 }
