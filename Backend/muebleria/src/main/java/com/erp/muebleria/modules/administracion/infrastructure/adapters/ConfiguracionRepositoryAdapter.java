@@ -1,7 +1,7 @@
 package com.erp.muebleria.modules.administracion.infrastructure.adapters;
 
 import com.erp.muebleria.modules.administracion.domain.entities.ConfiguracionSistema;
-import com.erp.muebleria.modules.administracion.domain.entities.MetodoValoracion;
+import com.erp.muebleria.modules.reportes.domain.entities.MetodoValoracion;
 import com.erp.muebleria.modules.administracion.domain.ports.ConfiguracionSistemaRepositoryPort;
 import com.erp.muebleria.modules.administracion.infrastructure.persistence.entities.ConfiguracionSistemaJpaEntity;
 import com.erp.muebleria.modules.administracion.infrastructure.persistence.repositories.SpringDataConfiguracionRepository;

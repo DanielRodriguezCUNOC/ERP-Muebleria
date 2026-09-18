@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="usuarios")
+@Table(name = "empleado")
 @Getter
 @Setter
 public class UsuarioJpaEntity {
@@ -14,14 +14,26 @@ public class UsuarioJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(nullable = false, unique = true)
     private String usuario;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    private String dpi;
+
+    @Column(name = "numero_telefono")
+    private String numeroTelefono;
+
+    @Column(name = "active", nullable = false)
     private Boolean activo = true;
+
+    @Column(name = "area_id")
+    private Long areaId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id", nullable = false)

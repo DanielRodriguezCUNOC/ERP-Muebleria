@@ -26,6 +26,9 @@ public class RolJpaEntity {
 
     private String descripcion;
 
+    @Column (nullable = false)
+    private Boolean activo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_permisos",

@@ -7,13 +7,9 @@ import com.erp.muebleria.modules.usuarios.infrastructure.persistence.entities.Pe
 import com.erp.muebleria.modules.usuarios.infrastructure.persistence.entities.RolJpaEntity;
 import com.erp.muebleria.modules.usuarios.infrastructure.persistence.entities.UsuarioJpaEntity;
 
-/**
- * Transforma de una entidad a un POJO y viceversa
- * para no hacerlo dentro de las reglas de negocio
- */
 public class UsuarioMapper {
 
-    public static Usuario toDomain (UsuarioJpaEntity entity) {
+    public static Usuario toDomain(UsuarioJpaEntity entity) {
         if (entity == null) return null;
 
         Rol rolDomain = null;
@@ -35,16 +31,20 @@ public class UsuarioMapper {
             }
         }
 
-        return new Usuario (
+        return new Usuario(
                 entity.getId(),
+                entity.getName(),
                 entity.getUsuario(),
                 entity.getPassword(),
+                entity.getDpi(),
+                entity.getNumeroTelefono(),
                 entity.getActivo(),
+                entity.getAreaId(),
                 rolDomain
         );
     }
 
-    public static UsuarioJpaEntity toEntity (Usuario domain) {
+    public static UsuarioJpaEntity toEntity(Usuario domain) {
         if (domain == null) return null;
 
         RolJpaEntity rolEntity = null;
@@ -57,9 +57,13 @@ public class UsuarioMapper {
 
         UsuarioJpaEntity entity = new UsuarioJpaEntity();
         entity.setId(domain.getId());
+        entity.setName(domain.getName());
         entity.setUsuario(domain.getUsuario());
         entity.setPassword(domain.getPassword());
+        entity.setDpi(domain.getDpi());
+        entity.setNumeroTelefono(domain.getNumeroTelefono());
         entity.setActivo(domain.getActivo());
+        entity.setAreaId(domain.getAreaId());
         entity.setRol(rolEntity);
 
         return entity;

@@ -1,21 +1,33 @@
 package com.erp.muebleria.modules.usuarios.application.dto;
 
+import com.erp.muebleria.modules.usuarios.domain.entities.Usuario;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class UsuarioResponseDTO {
     private Long id;
+    private String name;
     private String usuario;
-    private String rolName;
+    private String dpi;
+    private String numeroTelefono;
+    private Boolean activo;
+    private Long areaId;
+    private Long rolId;
+    private String nombreRol;
 
-    public UsuarioResponseDTO() {
-    }
-
-    public UsuarioResponseDTO(Long id, String usuario, String rolName) {
-        this.id = id;
-        this.usuario = usuario;
-        this.rolName = rolName;
+    public static UsuarioResponseDTO desdeDominio(Usuario usuario) {
+        return new UsuarioResponseDTO(
+                usuario.getId(),
+                usuario.getName(),
+                usuario.getUsuario(),
+                usuario.getDpi(),
+                usuario.getNumeroTelefono(),
+                usuario.getActivo(),
+                usuario.getAreaId(),
+                usuario.getRol() != null ? usuario.getRol().getId() : null,
+                usuario.getRol() != null ? usuario.getRol().getNombre() : null
+        );
     }
 }

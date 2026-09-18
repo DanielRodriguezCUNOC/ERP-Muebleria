@@ -1,3 +1,10 @@
 spring:
   application:
     name: muebleria
+
+jwt:
+  # Busca la variable de entorno JWT_SECRET. Si no existe, usa la clave por defecto tras los dos puntos.
+  secret: ${JWT_SECRET:ClaveSecretaSuperSeguraXDDParaMuebleriaErp2026SistemaIntegrado@TeLaComes}
+
+  # Busca la variable JWT_EXPIRATION. Si no existe, usa 86400000 (24 horas).
+  expiration: ${JWT_EXPIRATION:86400000}

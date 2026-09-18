@@ -1,5 +1,6 @@
 package com.erp.muebleria.modules.usuarios.infrastructure.config;
 
+import com.erp.muebleria.modules.clientes.domain.ports.ClienteRepositoryPort;
 import com.erp.muebleria.modules.usuarios.application.useCases.auth.CerrarSesionUseCase;
 import com.erp.muebleria.modules.usuarios.application.useCases.auth.IniciarSesionUseCase;
 import com.erp.muebleria.modules.usuarios.application.useCases.auth.RecuperarContrasenaUseCase;
@@ -7,6 +8,8 @@ import com.erp.muebleria.modules.usuarios.application.useCases.rolesPermisos.Asi
 import com.erp.muebleria.modules.usuarios.application.useCases.rolesPermisos.CrearRolUseCase;
 import com.erp.muebleria.modules.usuarios.application.useCases.usuarios.AsignarRolUseCase;
 import com.erp.muebleria.modules.usuarios.application.useCases.usuarios.CrearUsuarioUseCase;
+import com.erp.muebleria.modules.clientes.application.useCases.ModificarClienteUseCase;
+import com.erp.muebleria.modules.usuarios.application.useCases.usuarios.ModificarEmpleadosUseCase;
 import com.erp.muebleria.modules.usuarios.domain.ports.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +58,10 @@ public class UsuarioBeansConfig {
         return new AsignarRolUseCase(uRepo, rRepo);
     }
 
+    @Bean
+    public ModificarEmpleadosUseCase modificarEmpleadosUseCase(UsuarioRepositoryPort uRepo, RolRepositoryPort rRepo) {
+        return new ModificarEmpleadosUseCase(uRepo, rRepo);
+    }
 
 
 }

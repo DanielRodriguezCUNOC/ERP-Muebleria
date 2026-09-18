@@ -1,5 +1,6 @@
 package com.erp.muebleria.modules.administracion.domain.entities;
 
+import com.erp.muebleria.modules.reportes.domain.entities.MetodoValoracion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
