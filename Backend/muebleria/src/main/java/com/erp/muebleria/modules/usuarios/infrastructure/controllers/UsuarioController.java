@@ -28,8 +28,6 @@ public class UsuarioController {
     private final ObtenerUsuarioPorIdUseCase obtenerUsuarioPorIdUseCase;
     private final ObtenerPermisosPorUsuarioUseCase obtenerPermisosPorUsuarioUseCase;
 
-
-
     @PostMapping
     @PreAuthorize("hasAuthority('USUARIOS_GESTIONAR')")
     @Operation(summary = "Crear usuario", description = "Permite registrar un nuevo usuario en el sistema.")

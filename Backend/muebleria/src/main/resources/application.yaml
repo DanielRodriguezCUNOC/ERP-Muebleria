@@ -1,10 +1,30 @@
+# ==========================================
+# CONFIGURACIÓN DE BASE DE DATOS (PostgreSQL)
+# ==========================================
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# ==========================================
+# CONFIGURACIÓN DE HIBERNATE / JPA
+# ==========================================
 spring:
-  application:
-    name: muebleria
-
-jwt:
-  # Busca la variable de entorno JWT_SECRET. Si no existe, usa la clave por defecto tras los dos puntos.
-  secret: ${JWT_SECRET:ClaveSecretaSuperSeguraXDDParaMuebleriaErp2026SistemaIntegrado@TeLaComes}
-
-  # Busca la variable JWT_EXPIRATION. Si no existe, usa 86400000 (24 horas).
-  expiration: ${JWT_EXPIRATION:86400000}
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+# ==========================================
+# CONFIGURACIÓN DE SPRINGDOC OPENAPI (SWAGGER)
+# ==========================================
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.enabled=true
+springdoc.api-docs.path=/v3/api-docs
