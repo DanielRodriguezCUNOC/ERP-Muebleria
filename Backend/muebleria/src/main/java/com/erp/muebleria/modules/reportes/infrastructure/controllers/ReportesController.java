@@ -60,7 +60,7 @@ public class ReportesController {
     }
 
     @GetMapping("/productos/{productoId}/movimientos")
-    @PreAuthorize("hasAnyAuthority('REPORTES_VER', 'INVENTARIO_GESTIONAR')")
+    @PreAuthorize("hasAnyAuthority('REPORTES_VER', 'INVENTARIO_GESTIONAR', 'COMPRAS_VER')")
     @Operation(
             summary = "Obtener movimientos de un producto",
             description = "Obtiene un reporte de los movimientos de un producto específico, incluyendo entradas y salidas, con detalles de cada movimiento."
