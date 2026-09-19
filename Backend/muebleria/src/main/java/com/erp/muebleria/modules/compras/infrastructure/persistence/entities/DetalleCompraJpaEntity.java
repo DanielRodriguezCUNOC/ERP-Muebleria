@@ -17,12 +17,15 @@ import java.math.BigDecimal;
 public class DetalleCompraJpaEntity {
 
     @EmbeddedId
-    private DetalleCompraId id;
+    private DetalleCompraIdJpaEntity id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("compraId")
     @JoinColumn(name = "compra_id", nullable = false)
     private CompraJpaEntity compra;
+
+    @Column(name = "proveedor_id", nullable = false)
+    private Long proveedorId;
 
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;

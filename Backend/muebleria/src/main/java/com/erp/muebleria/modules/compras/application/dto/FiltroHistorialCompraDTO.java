@@ -5,18 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompraResponseDTO {
-
-    private Long id;
-    private List<Long> proveedorIds;
+public class FiltroHistorialCompraDTO {
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private Long proveedorId;
     private Long empleadoId;
-    private LocalDateTime fechaCompra;
-    private String mensaje;
 }

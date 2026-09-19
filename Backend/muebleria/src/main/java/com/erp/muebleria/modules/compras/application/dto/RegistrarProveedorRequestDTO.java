@@ -5,18 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompraResponseDTO {
+public class RegistrarProveedorRequestDTO {
 
-    private Long id;
-    private List<Long> proveedorIds;
+    private String nombre;
+    private String direccion;
+    private String telefonoContacto;
     private Long empleadoId;
-    private LocalDateTime fechaCompra;
-    private String mensaje;
 }

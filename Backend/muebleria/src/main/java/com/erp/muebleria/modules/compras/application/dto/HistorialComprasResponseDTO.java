@@ -5,18 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompraResponseDTO {
-
+public class HistorialComprasResponseDTO {
     private Long id;
-    private List<Long> proveedorIds;
-    private Long empleadoId;
     private LocalDateTime fechaCompra;
-    private String mensaje;
+    private Long empleadoId;
+    private Integer totalProductos;
+    private BigDecimal costoTotal;
+    private String proveedores;
 }

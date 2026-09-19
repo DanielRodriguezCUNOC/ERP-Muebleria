@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,14 +32,14 @@ public class RegistrarCompraUseCase {
 
         //* Construir entidad de dominio Compra
         Compra compra = new Compra();
-        compra.setProveedorId(request.getProveedorId());
         compra.setEmpleadoId(request.getEmpleadoId());
         compra.setFechaCompra(LocalDateTime.now());
 
         //* Construir Detalles y calcular costos totales
         List<DetalleCompra> detalles = request.getDetalles().stream().map(dto -> {
             DetalleCompra detalle = new DetalleCompra();
-            detalle.setProductId(dto.getProductId());
+            detalle.setProductoId(dto.getProductoId());
+            detalle.setProveedorId(dto.getProveedorId());
             detalle.setCantidad(dto.getCantidad());
             detalle.setPrecioUnitario(dto.getPrecioUnitario());
 
@@ -46,7 +48,12 @@ public class RegistrarCompraUseCase {
             return detalle;
         }).collect(Collectors.toList());
 
+        Set<Long> proveedorIds = detalles.stream()
+                .map(DetalleCompra::getProveedorId)
+                .collect(Collectors.toSet());
+
         compra.setDetalles(detalles);
+        compra.setProveedorIds(proveedorIds);
 
         //* Persistir Compra
         Compra compraGuardada = compraRepositoryPort.guardarCompra(compra);
@@ -55,8 +62,8 @@ public class RegistrarCompraUseCase {
         inventarioModuloPort.registrarEnInventario(compraGuardada);
 
         //* Publicar evento para la bitácora
-        String detalleBitacora = String.format("Se registró la compra ID: %d para el proveedor ID: %d con %d productos",
-                compraGuardada.getId(), request.getProveedorId(), request.getDetalles().size());
+        String detalleBitacora = String.format("Se registró la compra ID: %d para %d proveedor(es) con %d productos",
+                compraGuardada.getId(), proveedorIds.size(), request.getDetalles().size());
 
         eventPublisher.publishEvent(new OperacionRealizadaEvent(
                 request.getEmpleadoId(),
@@ -68,7 +75,7 @@ public class RegistrarCompraUseCase {
         //* Retornar DTO
         return new CompraResponseDTO(
                 compraGuardada.getId(),
-                compraGuardada.getProveedorId(),
+                new ArrayList<>(compraGuardada.getProveedorIds()),
                 compraGuardada.getEmpleadoId(),
                 compraGuardada.getFechaCompra(),
                 "Compra registrada exitosamente"

@@ -8,7 +8,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "compra")
@@ -30,6 +32,11 @@ public class CompraJpaEntity {
 
     @Column(name = "empleado_id", nullable = false)
     private Long empleadoId;
+
+    @ElementCollection
+    @CollectionTable(name = "compra_proveedor", joinColumns = @JoinColumn(name = "compra_id"))
+    @Column(name = "proveedor_id")
+    private Set<Long> proveedorIds = new HashSet<>();
 
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleCompraJpaEntity> detalles = new ArrayList<>();

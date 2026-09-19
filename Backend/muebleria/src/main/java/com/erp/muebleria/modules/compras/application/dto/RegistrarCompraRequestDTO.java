@@ -12,8 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegistrarCompraRequestDTO {
-
-    private Long proveedorId;
     private Long empleadoId;
     private List<DetalleCompraRequestDTO> detalles;
 }

@@ -1,15 +1,16 @@
 # ==========================================
-# CONFIGURACIÓN DE BASE DE DATOS (PostgreSQL)
-# ==========================================
-spring.datasource.url=${DB_URL}
-spring.datasource.username=${DB_USER}
-spring.datasource.password=${DB_PASSWORD}
-spring.datasource.driver-class-name=org.postgresql.Driver
-
-# ==========================================
-# CONFIGURACIÓN DE HIBERNATE / JPA
+# CONFIGURACIÃ“N DE BASE DE DATOS (PostgreSQL)
 # ==========================================
 spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  # ==========================================
+  # CONFIGURACIÃ“N DE HIBERNATE / JPA
+  # ==========================================
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,9 +23,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           time_zone: UTC
+
 # ==========================================
-# CONFIGURACIÓN DE SPRINGDOC OPENAPI (SWAGGER)
+# CONFIGURACIÃ“N DE SPRINGDOC OPENAPI (SWAGGER)
 # ==========================================
-springdoc.swagger-ui.path=/swagger-ui.html
-springdoc.swagger-ui.enabled=true
-springdoc.api-docs.path=/v3/api-docs
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /v1/api-docs

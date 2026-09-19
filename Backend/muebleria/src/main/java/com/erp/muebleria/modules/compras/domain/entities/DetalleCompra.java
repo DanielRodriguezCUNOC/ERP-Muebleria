@@ -13,7 +13,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DetalleCompra {
     private Long compraId;
-    private Long productId;
+    private Long productoId;
+    private Long proveedorId;
     private Integer cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal costoTotal;

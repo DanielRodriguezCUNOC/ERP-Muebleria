@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class DetalleCompraId implements Serializable {
+public class DetalleCompraIdJpaEntity implements Serializable {
 
     @Column(name = "compra_id")
     private Long compraId;
