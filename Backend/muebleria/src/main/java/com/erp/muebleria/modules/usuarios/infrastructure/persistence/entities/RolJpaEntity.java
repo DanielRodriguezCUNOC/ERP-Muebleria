@@ -24,6 +24,7 @@ public class RolJpaEntity {
     @Column(nullable = false, unique = true)
     private String rol;
 
+    @Column(name = "descripcion", length = 255)
     private String descripcion;
 
     @Column (nullable = false)
@@ -31,7 +32,7 @@ public class RolJpaEntity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "roles_permisos",
+            name = "rol_permiso",
             joinColumns = @JoinColumn(name = "rol_id"),
             inverseJoinColumns = @JoinColumn(name = "permiso_id")
     )

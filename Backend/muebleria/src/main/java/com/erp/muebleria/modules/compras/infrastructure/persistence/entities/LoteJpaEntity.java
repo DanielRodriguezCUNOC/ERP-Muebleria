@@ -1,10 +1,7 @@
 package com.erp.muebleria.modules.compras.infrastructure.persistence.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LoteJpaEntity {
 
     @Id
@@ -24,13 +22,13 @@ public class LoteJpaEntity {
     @Column(name = "detalle_compra_id", nullable = false)
     private Long detalleCompraId;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @Column(name = "producto_id", nullable = false)
+    private Long productoId;
 
     @Column(name = "creado_en", nullable = false, updatable = false)
     private LocalDateTime creadoEn;
 
-    @Column(name = "costo_unitario", nullable = false, precision = 10, scale = 2)
+    @Column(name = "costo_unitario", nullable = false, precision = 12, scale = 2)
     private BigDecimal costoUnitario;
 
     @Column(name = "cantidad_disponible", nullable = false)

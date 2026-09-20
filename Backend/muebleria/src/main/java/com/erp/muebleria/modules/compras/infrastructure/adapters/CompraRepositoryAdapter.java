@@ -43,7 +43,7 @@ public class CompraRepositoryAdapter implements CompraRepositoryPort {
         List<LoteJpaEntity> lotes = savedCompra.getDetalles().stream().map(detalle -> {
             LoteJpaEntity lote = new LoteJpaEntity();
             lote.setDetalleCompraId(savedCompra.getId());
-            lote.setProductId(detalle.getId().getProductId());
+            lote.setProductoId(detalle.getId().getProductoId());
             lote.setCreadoEn(LocalDateTime.now());
             lote.setCostoUnitario(detalle.getPrecioUnitario());
             lote.setCantidadInicial(detalle.getCantidad());

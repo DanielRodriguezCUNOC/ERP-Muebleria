@@ -27,9 +27,6 @@ public class CompraJpaEntity {
     @Column(name = "fecha_compra", nullable = false, updatable = false)
     private LocalDateTime fechaCompra;
 
-    @Column(name = "proveedor_id", nullable = false)
-    private Long proveedorId;
-
     @Column(name = "empleado_id", nullable = false)
     private Long empleadoId;
 

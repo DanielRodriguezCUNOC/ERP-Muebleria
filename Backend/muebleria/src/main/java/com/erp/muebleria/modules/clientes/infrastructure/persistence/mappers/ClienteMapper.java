@@ -1,34 +1,30 @@
 package com.erp.muebleria.modules.clientes.infrastructure.persistence.mappers;
 
+import com.erp.muebleria.modules.clientes.application.dto.ClienteResponseDTO;
 import com.erp.muebleria.modules.clientes.domain.entities.Cliente;
 import com.erp.muebleria.modules.clientes.infrastructure.persistence.entities.ClienteJpaEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
-public class ClienteMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface ClienteMapper {
 
-    public static Cliente toDomain(ClienteJpaEntity entity) {
-        if (entity == null) return null;
+    ClienteJpaEntity toEntity(Cliente domain);
 
-        return new Cliente(
-                entity.getId(),
-                entity.getNombre(),
-                entity.getNit(),
-                entity.getDireccion(),
-                entity.getTelefono(),
-                entity.getActivo()
+    Cliente toDomain(ClienteJpaEntity entity);
+
+    void updateEntityFromDomain(Cliente domain, @MappingTarget ClienteJpaEntity entity);
+
+    default ClienteResponseDTO toResponseDto(Cliente domain, String mensaje) {
+        return new ClienteResponseDTO(
+                domain.getId(),
+                domain.getNombre(),
+                domain.getNit(),
+                domain.getDireccion(),
+                domain.getTelefono(),
+                domain.getActivo(),
+                mensaje
         );
-    }
-
-    public static ClienteJpaEntity toEntity(Cliente domain) {
-        if (domain == null) return null;
-
-        ClienteJpaEntity entity = new ClienteJpaEntity();
-        entity.setId(domain.getId());
-        entity.setNombre(domain.getNombre());
-        entity.setNit(domain.getNit());
-        entity.setDireccion(domain.getDireccion());
-        entity.setTelefono(domain.getTelefono());
-        entity.setActivo(domain.getActivo());
-
-        return entity;
     }
 }

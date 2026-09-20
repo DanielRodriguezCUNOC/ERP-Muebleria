@@ -5,13 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 public class ConfiguracionSistema {
 
     private Long id;
-    private Double tasaIva;
+    private BigDecimal tasaIva;
     private MetodoValoracion metodoValoracion;
     //* Numero de autorización
     private String resolucionFacturas;

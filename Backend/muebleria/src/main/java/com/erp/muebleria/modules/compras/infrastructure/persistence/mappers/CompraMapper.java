@@ -44,7 +44,7 @@ public class CompraMapper {
             domain.setDetalles(entity.getDetalles().stream().map(detalle -> {
                 DetalleCompra detalleDomain = new DetalleCompra();
                 detalleDomain.setCompraId(detalle.getId().getCompraId());
-                detalleDomain.setProductoId(detalle.getId().getProductId());
+                detalleDomain.setProductoId(detalle.getId().getProductoId());
                 detalleDomain.setProveedorId(detalle.getProveedorId());
                 detalleDomain.setCantidad(detalle.getCantidad());
                 detalleDomain.setPrecioUnitario(detalle.getPrecioUnitario());

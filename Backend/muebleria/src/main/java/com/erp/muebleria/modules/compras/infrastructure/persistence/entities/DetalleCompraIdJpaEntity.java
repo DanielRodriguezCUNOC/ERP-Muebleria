@@ -17,6 +17,6 @@ public class DetalleCompraIdJpaEntity implements Serializable {
     @Column(name = "compra_id")
     private Long compraId;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @Column(name = "producto_id")
+    private Long productoId;
 }

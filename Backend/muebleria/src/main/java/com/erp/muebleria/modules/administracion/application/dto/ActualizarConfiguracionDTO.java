@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActualizarConfiguracionDTO {
 
-    private Double tasaIva;
+    private BigDecimal tasaIva;
     private String metodoValoracion;
     private String resolucionFactura;
     private String serieFacturas;

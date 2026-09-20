@@ -30,9 +30,9 @@ public class DetalleCompraJpaEntity {
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
 
-    @Column(name = "precio_unitario", nullable = false)
+    @Column(name = "precio_unitario", precision = 12, scale = 2)
     private BigDecimal precioUnitario;
 
-    @Column(name = "costo_total", nullable = false)
+    @Column(name = "costo_total", precision = 14, scale = 2)
     private BigDecimal costoTotal;
 }

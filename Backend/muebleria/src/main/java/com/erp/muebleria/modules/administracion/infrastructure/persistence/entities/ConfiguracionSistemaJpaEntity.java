@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /**
  * Mapea directamente los campos hacia la tabla configuracion_sistema de la base de datos.
  */
@@ -18,8 +20,8 @@ public class ConfiguracionSistemaJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tasa_iva", nullable = false)
-    private Double tasaIva;
+    @Column(name = "tasa_iva", nullable = false, precision = 5, scale = 4)
+    private BigDecimal tasaIva;
 
     @Column(name = "metodo_valoracion", nullable = false)
     private String metodoValoracion;
