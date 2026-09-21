@@ -1,0 +1,152 @@
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-slate-50">
+  <div class="flex flex-col justify-center px-8 py-12 sm:px-12 lg:px-20 xl:px-24 bg-white">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-3 bg-amber-600 text-white rounded-xl shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+          </svg>
+        </div>
+        <span class="text-2xl font-bold tracking-tight text-slate-800">Mueblería Itza'</span>
+      </div>
+
+      <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">
+        Recuperar Contraseña
+      </h2>
+      <p class="mt-2 text-sm text-slate-600">
+        Ingresa tu usuario y DPI para validar tus datos y establecer una nueva contraseña.
+      </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <!-- * Mensaje de Éxito -->
+      @if (successMessage()) {
+      <div class="mb-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" viewBox="0 0 20 20"
+          fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd" />
+        </svg>
+        <p class="text-sm text-emerald-800 font-medium">{{ successMessage() }}</p>
+      </div>
+      }
+
+      <!-- * Mensaje de Error -->
+      @if (errorMessage()) {
+      <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mt-0.5 shrink-0" viewBox="0 0 20 20"
+          fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd" />
+        </svg>
+        <p class="text-sm text-red-700 font-medium">{{ errorMessage() }}</p>
+      </div>
+      }
+
+      <!-- * Formulario de Recuperación -->
+      <form [formGroup]="recoveryForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <!--* Campo Usuario -->
+        <div>
+          <label for="usuario" class="block text-sm font-semibold text-slate-700">Usuario</label>
+          <div class="mt-1 relative">
+            <input id="usuario" type="text" formControlName="usuario" placeholder="Ej. admin"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition duration-150 text-slate-800 placeholder-slate-400"
+              [ngClass]="{'border-red-500 focus:ring-red-500': recoveryForm.get('usuario')?.touched && recoveryForm.get('usuario')?.invalid}" />
+          </div>
+          @if (recoveryForm.get('usuario')?.touched && recoveryForm.get('usuario')?.hasError('required')) {
+          <p class="mt-1 text-xs text-red-600">El usuario es requerido.</p>
+          }
+        </div>
+
+        <!--* Campo DPI -->
+        <div>
+          <label for="dpi" class="block text-sm font-semibold text-slate-700">DPI (13 dígitos)</label>
+          <div class="mt-1 relative">
+            <input id="dpi" type="text" maxlength="13" formControlName="dpi" placeholder="Ej. 2540123450101"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition duration-150 text-slate-800 placeholder-slate-400"
+              [ngClass]="{'border-red-500 focus:ring-red-500': recoveryForm.get('dpi')?.touched && recoveryForm.get('dpi')?.invalid}" />
+          </div>
+          @if (recoveryForm.get('dpi')?.touched && recoveryForm.get('dpi')?.hasError('required')) {
+          <p class="mt-1 text-xs text-red-600">El DPI es requerido.</p>
+          } @else if (recoveryForm.get('dpi')?.touched && recoveryForm.get('dpi')?.hasError('pattern')) {
+          <p class="mt-1 text-xs text-red-600">El DPI debe contener exactamente 13 números.</p>
+          }
+        </div>
+
+        <!--* Campo Nueva Contraseña -->
+        <div>
+          <label for="newPassword" class="block text-sm font-semibold text-slate-700">Nueva Contraseña</label>
+          <div class="mt-1 relative">
+            <input id="newPassword" type="password" formControlName="newPassword" placeholder="••••••••"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition duration-150 text-slate-800 placeholder-slate-400"
+              [ngClass]="{'border-red-500 focus:ring-red-500': recoveryForm.get('newPassword')?.touched && recoveryForm.get('newPassword')?.invalid}" />
+          </div>
+          @if (recoveryForm.get('newPassword')?.touched && recoveryForm.get('newPassword')?.hasError('required')) {
+          <p class="mt-1 text-xs text-red-600">La nueva contraseña es requerida.</p>
+          } @else if (recoveryForm.get('newPassword')?.touched &&
+          recoveryForm.get('newPassword')?.hasError('minlength')) {
+          <p class="mt-1 text-xs text-red-600">Debe tener al menos 6 caracteres.</p>
+          }
+        </div>
+
+        <!--* Campo Confirmar Contraseña -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-semibold text-slate-700">Confirmar Nueva
+            Contraseña</label>
+          <div class="mt-1 relative">
+            <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition duration-150 text-slate-800 placeholder-slate-400"
+              [ngClass]="{'border-red-500 focus:ring-red-500': (recoveryForm.get('confirmPassword')?.touched || recoveryForm.touched) && recoveryForm.hasError('passwordMismatch')}" />
+          </div>
+          @if ((recoveryForm.get('confirmPassword')?.touched || recoveryForm.touched) &&
+          recoveryForm.hasError('passwordMismatch')) {
+          <p class="mt-1 text-xs text-red-600">Las contraseñas no coinciden.</p>
+          }
+        </div>
+
+        <!--* Botón de Envío -->
+        <button type="submit" [disabled]="isLoading()"
+          class="w-full py-3.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl shadow-lg shadow-amber-600/20 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition duration-200 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+          @if (isLoading()) {
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          Actualizando...
+          } @else {
+          Restablecer Contraseña
+          }
+        </button>
+
+        <!--* Regresar al Login -->
+        <div class="text-center mt-4">
+          <a routerLink="/login" class="text-sm font-medium text-amber-600 hover:text-amber-700 transition">
+            ← Volver a Iniciar Sesión
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden lg:relative lg:flex bg-slate-900 items-center justify-center overflow-hidden">
+    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1600"
+      alt="Mueblería Interior" class="absolute inset-0 w-full h-full object-cover opacity-40" />
+    <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+
+    <div class="relative z-10 max-w-lg text-center px-8">
+      <h3 class="text-3xl font-bold text-white tracking-wide">
+        Seguridad de la Cuenta
+      </h3>
+      <p class="mt-4 text-slate-300 leading-relaxed">
+        Verificamos la identidad de los colaboradores mediante el DPI registrado en el sistema para garantizar la
+        confidencialidad de la información. Su privacidad es nuestra prioridad. <!-- // DENME SUS DATOS XD-->
+      </p>
+    </div>
+  </div>
+</div>

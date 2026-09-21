@@ -7,6 +7,8 @@ import com.erp.muebleria.modules.reportes.application.dto.OperacionEmpleadoDTO;
 import com.erp.muebleria.modules.reportes.application.useCases.*;
 import com.erp.muebleria.modules.reportes.domain.models.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reportes")
+@Tag(name = "Reportes", description = "Gestión de reportes y consultas del sistema")
+@SecurityRequirement(name = "BearerAuth")
 @AllArgsConstructor
 public class ReportesController {
 
@@ -51,6 +55,7 @@ public class ReportesController {
         List<TopProductosMasIngresos> reporte = reporteTopProductosMasIngresosUseCase.ejecutar();
         return ResponseEntity.ok(reporte);
     }
+    
     @GetMapping("/resumen-ventas-por-periodo")
     @PreAuthorize("hasAnyAuthority('REPORTES_VER', 'VENTAS_GESTIONAR')")
     @Operation(summary = "Obtener resumen de ventas por periodo", description = "Retorna un resumen de las ventas agrupadas por un periodo determinado.")

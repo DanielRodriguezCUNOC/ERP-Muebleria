@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/inventario/**").hasAnyAuthority("INVENTARIO_VER", "INVENTARIO_GESTIONAR")
                         .requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority("ROLES_GESTIONAR", "PERMISOS_GESTIONAR")
                         .requestMatchers("/api/v1/usuarios/**").hasAnyAuthority("USUARIOS_VER", "USUARIOS_GESTIONAR")
-                        .requestMatchers("/api/v1/reportes/**").hasAnyAuthority("REPORTES_VER", "INVENTARIO_GESTIONAR", "COMPRAS_GESTIONAR", "VENTAS_GESTIONAR")
+                        .requestMatchers("/api/v1/reportes/**").hasAnyAuthority("REPORTES_VER", "INVENTARIO_GESTIONAR", "COMPRAS_GESTIONAR", "VENTAS_GESTIONAR").requestMatchers("/api/v1/admin/configuracion/**").hasAuthority("CONFIGURACION_GESTIONAR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

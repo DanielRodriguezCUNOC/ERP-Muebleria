@@ -1,0 +1,148 @@
+<div class="p-6 max-w-7xl mx-auto space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-800">Reporte: Ventas por Período</h1>
+      <p class="text-sm text-slate-500 mt-0.5">
+        Resumen analítico de facturación e ingresos agrupados por rango de fechas.
+      </p>
+    </div>
+
+    <!-- Botón de Exportación -->
+    <button type="button" (click)="exportarPdf()"
+      [disabled]="isExporting() || isLoading() || reporteData().length === 0"
+      class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-md shadow-red-600/20 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed self-start sm:self-auto">
+      @if (isExporting()) {
+      <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+      <span>Generando...</span>
+      } @else {
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <span>Exportar PDF</span>
+      }
+    </button>
+  </div>
+
+  <!-- Filtros de Búsqueda -->
+  <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <form [formGroup]="filterForm" (ngSubmit)="consultarReporte()"
+      class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Fecha Inicio</label>
+        <input type="date" formControlName="fechaInicio"
+          class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Fecha Fin</label>
+        <input type="date" formControlName="fechaFin"
+          class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800" />
+      </div>
+
+      <div>
+        <button type="submit" [disabled]="isLoading()"
+          class="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl shadow-md shadow-amber-600/20 transition flex items-center justify-center gap-2 disabled:opacity-50">
+          @if (isLoading()) {
+          <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+          <span>Consultando...</span>
+          } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span>Filtrar Ventas</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Métricas Generales del Rango -->
+  @if (!isLoading() && reporteData().length > 0) {
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+      <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Ingresos Generados</p>
+        <p class="text-2xl font-bold text-slate-800">{{ totalIngresosAcumulados() | currency:'GTQ':'symbol':'1.2-2' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+      <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Facturas Emitidas</p>
+        <p class="text-2xl font-bold text-slate-800">{{ totalFacturasEmitidas() }}</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Contenedor Tabla -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    @if (isLoading()) {
+    <div class="p-12 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
+      <p class="mt-3 text-slate-600 font-medium text-sm">Cargando reporte de ventas...</p>
+    </div>
+    } @else if (errorMessage()) {
+    <div class="p-8 text-center text-red-600">
+      <p class="font-semibold">{{ errorMessage() }}</p>
+      <button (click)="consultarReporte()"
+        class="mt-3 text-sm text-amber-600 hover:underline font-medium">Reintentar</button>
+    </div>
+    } @else {
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-700">
+        <thead class="bg-slate-50 text-slate-600 font-semibold uppercase text-xs border-b border-slate-200">
+          <tr>
+            <th scope="col" class="px-6 py-3.5">Fecha Inicio</th>
+            <th scope="col" class="px-6 py-3.5">Fecha Fin</th>
+            <th scope="col" class="px-6 py-3.5 text-center">Facturas Emitidas</th>
+            <th scope="col" class="px-6 py-3.5 text-right">Total Ingresos</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (registro of reporteData(); track $index) {
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="px-6 py-4 font-medium text-slate-800">
+              {{ registro.fechaInicio | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+            <td class="px-6 py-4 font-medium text-slate-800">
+              {{ registro.fechaFin | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-800">
+                {{ registro.totalFacturas }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right font-bold text-slate-900">
+              {{ registro.totalIngresos | currency:'GTQ':'symbol':'1.2-2' }}
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+              No se registraron ventas en el rango de fechas seleccionado.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+</div>
