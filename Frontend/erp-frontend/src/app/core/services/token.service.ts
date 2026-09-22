@@ -7,7 +7,11 @@ import { JwtPayload } from '../models/auth.model';
 export class TokenService {
   private readonly TOKEN_KEY = 'jwt_token';
 
-  currentUserPayload = signal<JwtPayload | null>(this.getDecodedToken());
+  currentUserPayload = signal<JwtPayload | null>(null);
+
+  constructor() {
+    this.currentUserPayload.set(this.getDecodedToken() ?? null);
+  }
 
   setToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
@@ -25,18 +29,12 @@ export class TokenService {
 
   getDecodedToken(): JwtPayload | null {
     const token = this.getToken();
-    if (!token) {
-      return null;
-    }
-
+    if (!token) return null;
     if (this.isTokenExpired(token)) {
       this.removeToken();
       return null;
     }
-
-    const payload = this.decodeToken(token);
-    this.currentUserPayload.set(payload);
-    return payload;
+    return this.decodeToken(token);
   }
 
   getAuthorities(): string[] {

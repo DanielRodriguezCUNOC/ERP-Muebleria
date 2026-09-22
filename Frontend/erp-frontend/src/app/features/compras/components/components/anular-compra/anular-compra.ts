@@ -2,7 +2,7 @@ import { Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ComprasService } from '../../../services/compras.service';
-import { AuthService } from '../../../../../core/services/auth.service'; // Tu servicio de autenticación
+import { AuthService } from '../../../../../core/services/auth.service';
 import { AnularCompraRequestDTO, CompraResponseDTO } from '../../../models/compras.model';
 
 @Component({

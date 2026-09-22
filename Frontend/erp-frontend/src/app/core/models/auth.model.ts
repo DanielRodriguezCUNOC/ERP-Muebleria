@@ -21,4 +21,5 @@ export interface JwtPayload {
   iat: number;
   exp: number;
   usuarioId?: number;
+  areaId?: number;
 }
