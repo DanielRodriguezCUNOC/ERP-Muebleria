@@ -1,0 +1,223 @@
+<div class="p-6 max-w-7xl mx-auto space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-800">Bitácora de Operaciones por Empleado</h1>
+      <p class="text-sm text-slate-500 mt-0.5">
+        Auditoría detallada de acciones, registros y cambios realizados en los módulos del ERP.
+      </p>
+    </div>
+
+    <!-- Exportar PDF -->
+    <button type="button" (click)="exportarPdf()"
+      [disabled]="isExporting() || isLoadingOperaciones() || !empleadoSeleccionado() || operaciones().length === 0"
+      class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-md shadow-red-600/20 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed self-start sm:self-auto">
+      @if (isExporting()) {
+      <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+      <span>Generando...</span>
+      } @else {
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <span>Exportar PDF</span>
+      }
+    </button>
+  </div>
+
+  <!-- Buscador y Selector de Empleado -->
+  <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative z-20">
+    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+      Seleccionar Empleado
+    </label>
+
+    <div class="relative">
+      <input type="text" [ngModel]="busquedaEmpleado()"
+        (ngModelChange)="busquedaEmpleado.set($event); showDropdown.set(true)" (focus)="showDropdown.set(true)"
+        placeholder="Buscar por nombre, usuario (@) o rol..."
+        class="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 absolute left-3 top-3.5" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+
+      @if (isLoadingEmpleados()) {
+      <div
+        class="absolute right-3 top-3.5 animate-spin h-5 w-5 border-2 border-amber-600 border-t-transparent rounded-full">
+      </div>
+      }
+    </div>
+
+    <!-- Menú Desplegable con Autocomplete -->
+    @if (showDropdown() && empleadosFiltrados().length > 0) {
+    <div
+      class="absolute left-0 right-0 mt-2 bg-white rounded-xl border border-slate-200 shadow-xl max-h-60 overflow-y-auto z-30 divide-y divide-slate-100">
+      @for (emp of empleadosFiltrados(); track emp.id) {
+      <button type="button" (click)="seleccionarEmpleado(emp)"
+        class="w-full px-4 py-3 text-left hover:bg-amber-50/60 transition flex items-center justify-between group">
+        <div>
+          <p class="font-semibold text-slate-800 text-sm group-hover:text-amber-800">{{ emp.name }}</p>
+          <p class="text-xs text-slate-500">Usuario: <span class="font-mono text-slate-700">&#64;{{ emp.usuario
+              }}</span> | DPI: {{ emp.dpi }}</p>
+        </div>
+        <div class="text-right">
+          <span class="text-xs font-semibold px-2 py-0.5 bg-slate-100 text-slate-700 rounded block">
+            {{ emp.nombreRol || 'Sin rol' }}
+          </span>
+        </div>
+      </button>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Tarjeta de Ficha del Empleado y Resumen -->
+  @if (empleadoSeleccionado()) {
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+    <!-- Info Empleado -->
+    <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-sm md:col-span-2 flex flex-col justify-between">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span
+            class="text-[10px] font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded">
+            {{ empleadoSeleccionado()?.nombreRol || 'Empleado' }}
+          </span>
+          <h2 class="text-xl font-bold mt-2 leading-tight">{{ empleadoSeleccionado()?.name }}</h2>
+          <p class="text-xs text-slate-400 font-mono mt-0.5">&#64;{{ empleadoSeleccionado()?.usuario }}</p>
+        </div>
+        <span class="px-2.5 py-1 text-xs font-semibold rounded-full"
+          [ngClass]="empleadoSeleccionado()?.activo ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'">
+          {{ empleadoSeleccionado()?.activo ? 'Activo' : 'Inactivo' }}
+        </span>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-300 flex justify-between">
+        <span>Tel: {{ empleadoSeleccionado()?.numeroTelefono || 'N/A' }}</span>
+        <span>DPI: {{ empleadoSeleccionado()?.dpi || 'N/A' }}</span>
+      </div>
+    </div>
+
+    <!-- Métrica Total Operaciones -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+      <div class="p-3 bg-amber-50 text-amber-600 rounded-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Registro Bitácora</p>
+        <p class="text-2xl font-bold text-slate-800">{{ totalOperaciones() }}</p>
+      </div>
+    </div>
+
+    <!-- Métrica Módulos Afectados -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+      <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Módulos Interactuados</p>
+        <p class="text-2xl font-bold text-slate-800">{{ modulosUnicos() }}</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Tabla de Bitácora de Operaciones -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <!-- Barra de Filtro Interno -->
+    <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="relative w-full sm:w-80">
+        <input type="text" [ngModel]="filtroBusqueda()" (ngModelChange)="filtroBusqueda.set($event)"
+          placeholder="Filtrar por acción, módulo o detalle..."
+          class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 absolute left-3 top-3" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+
+      <span class="text-xs text-slate-500 font-medium">
+        Mostrando {{ operacionesFiltradas().length }} de {{ operaciones().length }} evento(s)
+      </span>
+    </div>
+
+    @if (!empleadoSeleccionado()) {
+    <div class="p-16 text-center text-slate-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-300 mb-3" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+      <p class="text-base font-semibold text-slate-600">Ningún empleado seleccionado</p>
+      <p class="text-sm text-slate-400 mt-1">Busca un usuario arriba para auditar su historial de operaciones en el
+        sistema.</p>
+    </div>
+    } @else if (isLoadingOperaciones()) {
+    <div class="p-12 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-600 border-t-transparent"></div>
+      <p class="mt-3 text-slate-600 font-medium text-sm">Cargando bitácora de operaciones...</p>
+    </div>
+    } @else if (errorMessage()) {
+    <div class="p-8 text-center text-red-600">
+      <p class="font-semibold">{{ errorMessage() }}</p>
+      <button (click)="cargarBitacora(empleadoSeleccionado()!.id)"
+        class="mt-3 text-sm text-amber-600 hover:underline font-medium">Reintentar</button>
+    </div>
+    } @else {
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-700">
+        <thead class="bg-slate-50 text-slate-600 font-semibold uppercase text-xs border-b border-slate-200">
+          <tr>
+            <th scope="col" class="px-6 py-3.5">Fecha y Hora</th>
+            <th scope="col" class="px-6 py-3.5">Módulo</th>
+            <th scope="col" class="px-6 py-3.5">Acción</th>
+            <th scope="col" class="px-6 py-3.5">Detalle / Descripción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (op of operacionesFiltradas(); track op.id) {
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <!-- Fecha -->
+            <td class="px-6 py-4 font-medium text-slate-800 whitespace-nowrap">
+              {{ op.fecha | date:'dd/MM/yyyy HH:mm:ss' }}
+            </td>
+
+            <!-- Módulo -->
+            <td class="px-6 py-4">
+              <span
+                class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 font-mono">
+                {{ op.modulo }}
+              </span>
+            </td>
+
+            <!-- Acción -->
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold border"
+                [ngClass]="getBadgeColorClass(op.accion)">
+                {{ op.accion }}
+              </span>
+            </td>
+
+            <!-- Detalle -->
+            <td class="px-6 py-4 text-slate-600 text-xs">
+              {{ op.detalle }}
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+              No se registran eventos de bitácora para este empleado o filtro.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+</div>

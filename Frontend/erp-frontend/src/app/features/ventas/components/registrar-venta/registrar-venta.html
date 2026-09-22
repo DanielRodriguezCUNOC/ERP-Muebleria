@@ -1,0 +1,131 @@
+<div class="container mt-4">
+  <h2>Nueva Venta</h2>
+
+  <!-- Alertas de Estado -->
+  @if (mensajeExito()) {
+  <div class="alert alert-success mt-2">{{ mensajeExito() }}</div>
+  }
+  @if (mensajeError()) {
+  <div class="alert alert-danger mt-2">{{ mensajeError() }}</div>
+  }
+
+  <!-- Datos del Cliente -->
+  <div class="card my-3 p-3">
+    <h5>Datos del Cliente</h5>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">NIT</label>
+
+        <div class="input-group">
+          <input type="text" class="form-control" [ngModel]="clienteNit()" (ngModelChange)="clienteNit.set($event)"
+            placeholder="Ingrese NIT o CF" />
+          <button class="btn btn-outline-secondary" type="button" (click)="buscarCliente()">
+            Buscar
+          </button>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <label class="form-label">Nombre del Cliente</label>
+        <input type="text" class="form-control" [ngModel]="clienteNombre()"
+          (ngModelChange)="clienteNombre.set($event)" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Búsqueda e Inserción de Productos -->
+  <div class="card my-3 p-3">
+    <h5>Agregar Productos</h5>
+    <div class="position-relative">
+      <input type="text" class="form-control" [ngModel]="busquedaProducto()" (ngModelChange)="onBuscarProducto($event)"
+        placeholder="Escriba el nombre o SKU del producto..." />
+
+      <!-- Resultados de Autocompletado -->
+      @if (productosCoincidentes().length > 0) {
+      <ul class="list-group position-absolute w-100 z-3 shadow mt-1">
+        @for (prod of productosCoincidentes(); track prod.productoId) {
+        <li
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center cursor-pointer"
+          (click)="agregarProducto(prod)">
+          <div>
+            <strong>{{ prod.nombre }}</strong> <small class="text-muted">({{ prod.sku }})</small>
+          </div>
+          <div>
+            <span class="badge bg-secondary me-2">Stock: {{ prod.existencia }}</span>
+            <span class="fw-bold">Q{{ prod.precio | number:'1.2-2' }}</span>
+          </div>
+        </li>
+        }
+      </ul>
+      }
+    </div>
+  </div>
+
+  <!-- Tabla de Detalle de Venta -->
+  <div class="card my-3 p-3">
+    <h5>Detalle de la Venta</h5>
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Producto</th>
+          <th>Precio Unit.</th>
+          <th style="width: 120px;">Cantidad</th>
+          <th>Subtotal</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of detalles(); track item.productoId; let idx = $index) {
+        <tr>
+          <td>{{ item.sku }}</td>
+          <td>{{ item.nombre }}</td>
+          <td>Q{{ item.precioUnitario | number:'1.2-2' }}</td>
+          <td>
+            <input type="number" class="form-control" [ngModel]="item.cantidad"
+              (ngModelChange)="actualizarCantidad(idx, $event)" min="1" [max]="item.existenciaDisponible" />
+          </td>
+          <td>Q{{ (item.cantidad * item.precioUnitario) | number:'1.2-2' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" (click)="eliminarDetalle(idx)">
+              Quitar
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6" class="text-center text-muted">No se han agregado productos a la venta.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- Resumen de Totales -->
+    <div class="row justify-content-end mt-3">
+      <div class="col-md-4">
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Subtotal:</span>
+            <strong>Q{{ subTotal() | number:'1.2-2' }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>IVA (12%):</span>
+            <strong>Q{{ iva() | number:'1.2-2' }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-light fs-5">
+            <span>Total:</span>
+            <strong class="text-primary">Q{{ total() | number:'1.2-2' }}</strong>
+          </li>
+        </ul>
+
+        <button class="btn btn-success w-100 mt-3 fs-5" [disabled]="detalles().length === 0 || guardandoVenta()"
+          (click)="procesarVenta()">
+          @if (guardandoVenta()) {
+          Procesando...
+          } @else {
+          Registrar Venta
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
