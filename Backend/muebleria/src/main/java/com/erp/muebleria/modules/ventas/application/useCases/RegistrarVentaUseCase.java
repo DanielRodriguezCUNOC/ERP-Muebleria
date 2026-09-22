@@ -10,7 +10,6 @@ import com.erp.muebleria.modules.ventas.domain.entities.Factura;
 import com.erp.muebleria.modules.ventas.domain.entities.Venta;
 import com.erp.muebleria.modules.ventas.domain.ports.FacturaPdfPort;
 import com.erp.muebleria.modules.ventas.domain.ports.VentaRepositoryPort;
-import com.erp.muebleria.modules.ventas.infrastructure.persistence.mappers.VentaMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class RegistrarVentaUseCase {
 
     private final VentaRepositoryPort ventaRepositoryPort;
     private final FacturaPdfPort facturaPdfPort;
-    private final VentaMapper ventaMapper;
+    private final com.erp.muebleria.modules.ventas.application.mappers.VentaApplicationMapper ventaMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional

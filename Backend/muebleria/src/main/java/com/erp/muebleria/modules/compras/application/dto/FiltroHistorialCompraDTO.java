@@ -7,13 +7,17 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class FiltroHistorialCompraDTO {
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    LocalDate fechaInicio;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    LocalDate fechaFin;
     private Long proveedorId;
     private Long empleadoId;
 }

@@ -23,11 +23,12 @@ public class PostgresUsuarioRepository implements UsuarioRepositoryPort {
 
     private final SpringDataUsuarioRepository springDataUsuarioRepository;
     private final SpringDataPermisoRepository springDataPermisoRepository;
+    private final UsuarioMapper usuarioMapper;
 
     @Override
     public void guardar(Usuario usuario) {
-        //* Convertir el POJO a JPA
-        UsuarioJpaEntity entity = UsuarioMapper.toEntity(usuario);
+        // * Convertir el POJO a JPA
+        UsuarioJpaEntity entity = usuarioMapper.toEntity(usuario);
 
         springDataUsuarioRepository.save(entity);
     }
@@ -38,12 +39,12 @@ public class PostgresUsuarioRepository implements UsuarioRepositoryPort {
          * Buscar el DB segun el id
          * Mapea a un POJO el resultado obtenido
          */
-        return springDataUsuarioRepository.findById(id).map(UsuarioMapper::toDomain);
+        return springDataUsuarioRepository.findById(id).map(usuarioMapper::toDomain);
     }
 
     @Override
     public Optional<Usuario> buscarPorUsuario(String usuario) {
-        return springDataUsuarioRepository.findByUsuario(usuario).map(UsuarioMapper::toDomain);
+        return springDataUsuarioRepository.findByUsuario(usuario).map(usuarioMapper::toDomain);
     }
 
     @Override
@@ -53,9 +54,9 @@ public class PostgresUsuarioRepository implements UsuarioRepositoryPort {
 
     @Override
     public Usuario guardarUsuarioModificado(Usuario usuario) {
-        UsuarioJpaEntity entity = UsuarioMapper.toEntity(usuario);
+        UsuarioJpaEntity entity = usuarioMapper.toEntity(usuario);
         UsuarioJpaEntity savedEntity = springDataUsuarioRepository.save(entity);
-        return UsuarioMapper.toDomain(savedEntity);
+        return usuarioMapper.toDomain(savedEntity);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class PostgresUsuarioRepository implements UsuarioRepositoryPort {
     @Override
     public List<Usuario> obtenerTodosLosUsuarios() {
         return springDataUsuarioRepository.findAll().stream()
-                .map(UsuarioMapper::toDomain)
+                .map(usuarioMapper::toDomain)
                 .toList();
     }
 
@@ -78,5 +79,10 @@ public class PostgresUsuarioRepository implements UsuarioRepositoryPort {
     @Override
     public boolean existeUsuario(Long usuarioId) {
         return springDataUsuarioRepository.existsById(usuarioId);
+    }
+
+    @Override
+    public List<PermisoResponseDTO> obtenerPermisos() {
+        return springDataPermisoRepository.getAllPermisos();
     }
 }

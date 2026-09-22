@@ -1,6 +1,7 @@
 package com.erp.muebleria.modules.usuarios.infrastructure.controllers;
 
 import com.erp.muebleria.modules.usuarios.application.dto.CrearRolDTO;
+import com.erp.muebleria.modules.usuarios.application.dto.PermisoResponseDTO;
 import com.erp.muebleria.modules.usuarios.application.dto.ModificarRolDTO;
 import com.erp.muebleria.modules.usuarios.application.dto.RolResponseDTO;
 import com.erp.muebleria.modules.usuarios.application.useCases.rolesPermisos.*;
@@ -28,26 +29,26 @@ public class RolController {
     private final EliminarRolUseCase eliminarRolUseCase;
     private final QuitarPermisoUseCase quitarPermisoUseCase;
     private final ObtenerRolesUseCase obtenerRolesUseCase;
-
+    private final ObtenerPermisosUseCase obtenerPermisosUseCase;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('USUARIOS_GESTIONAR')")
+    @PreAuthorize("hasAuthority('ROLES_GESTIONAR')")
     @Operation(summary = "Crear rol", description = "Permite registrar un nuevo rol en el sistema.")
-    public ResponseEntity<Void> crearRol(@RequestBody CrearRolDTO dto){
+    public ResponseEntity<Void> crearRol(@RequestBody CrearRolDTO dto) {
         crearRolUseCase.ejecutar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/{rolId}/permisos/{permisoId}")
-    @PreAuthorize("hasAuthority('USUARIOS_GESTIONAR')")
+    @PreAuthorize("hasAuthority('PERMISOS_GESTIONAR')")
     @Operation(summary = "Asignar permiso a un rol", description = "Permite asignar un permiso específico a un rol existente.")
-    public ResponseEntity<Void> asignarPermiso(@PathVariable Long rolId, @PathVariable Long permisoId){
+    public ResponseEntity<Void> asignarPermiso(@PathVariable Long rolId, @PathVariable Long permisoId) {
         asignarPermisoUseCase.ejecutar(rolId, permisoId);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{rolId}")
-    @PreAuthorize("hasAuthority('USUARIOS_GESTIONAR')")
+    @PreAuthorize("hasAuthority('ROLES_GESTIONAR')")
     @Operation(summary = "Modificar rol", description = "Actualiza el nombre o la descripción de un rol existente.")
     public ResponseEntity<Void> modificarRol(
             @PathVariable Long rolId,
@@ -57,7 +58,7 @@ public class RolController {
     }
 
     @DeleteMapping("/{rolId}")
-    @PreAuthorize("hasAuthority('USUARIOS_GESTIONAR')")
+    @PreAuthorize("hasAuthority('ROLES_GESTIONAR')")
     @Operation(summary = "Desactivar rol", description = "Realiza la baja lógica de un rol si no tiene empleados activos asociados.")
     public ResponseEntity<Void> eliminarRol(@PathVariable Long rolId) {
         eliminarRolUseCase.ejecutar(rolId);
@@ -65,7 +66,7 @@ public class RolController {
     }
 
     @DeleteMapping("/{rolId}/permisos/{permisoId}")
-    @PreAuthorize("hasAuthority('USUARIOS_GESTIONAR')")
+    @PreAuthorize("hasAuthority('PERMISOS_GESTIONAR')")
     @Operation(summary = "Quitar permiso a un rol", description = "Elimina un permiso asignado a un rol específico.")
     public ResponseEntity<Void> quitarPermiso(@PathVariable Long rolId, @PathVariable Long permisoId) {
         quitarPermisoUseCase.ejecutar(rolId, permisoId);
@@ -77,5 +78,12 @@ public class RolController {
     @Operation(summary = "Obtener todos los roles", description = "Lista todos los roles registrados en el sistema.")
     public ResponseEntity<List<RolResponseDTO>> obtenerTodosLosRoles() {
         return ResponseEntity.ok(obtenerRolesUseCase.ejecutar());
+    }
+
+    @GetMapping("/permisos")
+    @PreAuthorize("hasAuthority('USUARIOS_VER')")
+    @Operation(summary = "Obtener todos los permisos", description = "Lista todos los permisos registrados en el sistema.")
+    public ResponseEntity<List<PermisoResponseDTO>> obtenerTodosLosPermisos() {
+        return ResponseEntity.ok(obtenerPermisosUseCase.ejecutar());
     }
 }

@@ -18,4 +18,14 @@ public interface SpringDataPermisoRepository extends JpaRepository<PermisoJpaEnt
             WHERE e.id = :usuarioId
             """, nativeQuery = true)
     List<PermisoResponseDTO> obtenerPermisosPorUsuarioId(@Param("usuarioId") Long usuarioId);
+
+    @Query("""
+            SELECT new com.erp.muebleria.modules.usuarios.application.dto.PermisoResponseDTO(
+                p.id,
+                p.nombre,
+                p.descripcion
+            )
+            FROM PermisoJpaEntity p
+            """)
+    List<PermisoResponseDTO> getAllPermisos();
 }

@@ -72,3 +72,56 @@ export interface MovimientoProductoResponseDTO {
   origenId: number;
   fecha: string;
 }
+
+export interface ConsultaComprasRequestDTO {
+  fechaInicio: string;
+  fechaFin: string;
+}
+
+export interface ReporteCompraResponseDTO {
+  compraId: number;
+  proveedorId: number;
+  nombreProveedor: string;
+  //* ISO LocalDateTime
+  fecha: string;
+  total: number;
+  estado: string;
+}
+
+export interface ProveedorResponseDTO {
+  id: number;
+  nombre: string;
+  direccion?: string;
+  telefonoContacto?: string;
+  activo: boolean;
+}
+
+export interface ReporteCompraResponseDTO {
+  compraId: number;
+  proveedorId: number;
+  nombreProveedor: string;
+  fecha: string;
+  total: number;
+  estado: string;
+}
+
+export interface UsuarioResponseDTO {
+  id: number;
+  name: string;
+  usuario: string;
+  dpi: string;
+  numeroTelefono: string;
+  activo: boolean;
+  areaId?: number;
+  rolId?: number;
+  nombreRol?: string;
+}
+
+export interface OperacionEmpleadoResponseDTO {
+  id: number;
+  empleadoId: number;
+  accion: string;
+  modulo: string;
+  detalle: string;
+  fecha: string;
+}

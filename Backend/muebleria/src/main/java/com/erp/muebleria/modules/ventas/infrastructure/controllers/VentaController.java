@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Ventas", description = "Gestión de ventas")
-@RequestMapping("api/v1/ventas")
+@RequestMapping("/api/v1/ventas")
 @SecurityRequirement(name = "BearerAuth")
 @AllArgsConstructor
 public class VentaController {

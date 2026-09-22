@@ -1,16 +1,18 @@
 package com.erp.muebleria.modules.usuarios.domain.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Usuario {
 
     private Long id;
-    private String name;
+    private String nombre;
     private String usuario;
     private String password;
     private String dpi;
@@ -44,8 +46,8 @@ public class Usuario {
     }
 
     // Método de dominio para actualizar datos operativos del empleado
-    public void actualizarInformacion(String name, String numeroTelefono, Long areaId, Rol nuevoRol) {
-        if (name != null) this.name = name;
+    public void actualizarInformacion(String nombre, String numeroTelefono, Long areaId, Rol nuevoRol) {
+        if (nombre != null) this.nombre = nombre;
         if (numeroTelefono != null) this.numeroTelefono = numeroTelefono;
         if (areaId != null) this.areaId = areaId;
         if (nuevoRol != null) this.rol = nuevoRol;

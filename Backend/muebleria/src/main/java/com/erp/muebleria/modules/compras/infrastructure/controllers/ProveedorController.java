@@ -5,12 +5,16 @@ import com.erp.muebleria.modules.compras.application.dto.ModificarProveedorReque
 import com.erp.muebleria.modules.compras.application.dto.ProveedorResponseDTO;
 import com.erp.muebleria.modules.compras.application.dto.RegistrarProveedorRequestDTO;
 import com.erp.muebleria.modules.compras.application.useCases.CambiarEstadoProveedorUseCase;
+import com.erp.muebleria.modules.compras.application.useCases.ConsultarProveedoresUseCase;
 import com.erp.muebleria.modules.compras.application.useCases.ModificarProveedorUseCase;
 import com.erp.muebleria.modules.compras.application.useCases.RegistrarProveedorUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Proveedores", description = "Gestión de proveedores")
-@RequestMapping("api/v1/compras/proveedores")
+@RequestMapping("/api/v1/compras/proveedores")
 @SecurityRequirement(name = "BearerAuth")
 @AllArgsConstructor
 public class ProveedorController {
@@ -26,6 +30,7 @@ public class ProveedorController {
     private final RegistrarProveedorUseCase registrarProveedorUseCase;
     private final ModificarProveedorUseCase modificarProveedorUseCase;
     private final CambiarEstadoProveedorUseCase cambiarEstadoProveedorUseCase;
+    private final ConsultarProveedoresUseCase consultarProveedoresUseCase;
 
     @PostMapping
     @PreAuthorize("hasAuthority('COMPRAS_GESTIONAR')")
@@ -53,5 +58,14 @@ public class ProveedorController {
             @RequestBody CambiarEstadoProveedorRequestDTO request) {
         ProveedorResponseDTO response = cambiarEstadoProveedorUseCase.ejecutar(id, request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('COMPRAS_VER', 'REPORTES_VER', 'COMPRAS_GESTIONAR')")
+    @Operation(summary = "Consultar catálogo de proveedores", description = "Permite listar proveedores con filtro opcional por nombre.")
+    public ResponseEntity<List<ProveedorResponseDTO>> consultarProveedores(
+            @RequestParam(required = false) String nombre) {
+        List<ProveedorResponseDTO> proveedores = consultarProveedoresUseCase.ejecutar(nombre);
+        return ResponseEntity.ok(proveedores);
     }
 }

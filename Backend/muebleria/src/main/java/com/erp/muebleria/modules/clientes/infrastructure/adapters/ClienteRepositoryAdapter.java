@@ -8,7 +8,6 @@ import com.erp.muebleria.modules.clientes.infrastructure.persistence.repositorie
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -47,7 +46,7 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
     }
 
     @Override
-    public List<Cliente> obtenerTodosLosClientes() {
-        return List.of();
+    public org.springframework.data.domain.Page<Cliente> obtenerTodosLosClientes(org.springframework.data.domain.Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toDomain);
     }
 }

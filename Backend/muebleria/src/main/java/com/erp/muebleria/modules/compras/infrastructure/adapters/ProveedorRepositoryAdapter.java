@@ -1,5 +1,6 @@
 package com.erp.muebleria.modules.compras.infrastructure.adapters;
 
+import com.erp.muebleria.modules.compras.application.dto.ProveedorResponseDTO;
 import com.erp.muebleria.modules.compras.domain.entities.Proveedor;
 import com.erp.muebleria.modules.compras.domain.ports.ProveedorRepositoryPort;
 import com.erp.muebleria.modules.compras.infrastructure.persistence.entities.ProveedorJpaEntity;
@@ -8,6 +9,7 @@ import com.erp.muebleria.modules.compras.infrastructure.persistence.repositories
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -29,4 +31,14 @@ public class ProveedorRepositoryAdapter implements ProveedorRepositoryPort {
     public Optional<Proveedor> buscarPorId(Long id) {
         return repository.findById(id).map(mapper::toDomain);
     }
+
+    @Override
+    public List<ProveedorResponseDTO> buscarTodos(String nombre) {
+        return repository.buscarTodos(nombre)
+            .stream()
+            .map(mapper::toDto)
+            .toList();
+    }
+
+
 }

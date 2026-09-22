@@ -45,4 +45,15 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+    
+        @ExceptionHandler({io.jsonwebtoken.JwtException.class, IllegalArgumentException.class})
+        public ResponseEntity<ErrorResponseDTO> manejarJwtInvalido(Exception ex) {
+            ErrorResponseDTO response = new ErrorResponseDTO(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Token inválido o expirado",
+                    ex.getMessage(),
+                    LocalDateTime.now()
+            );
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
 }

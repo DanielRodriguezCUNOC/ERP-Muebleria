@@ -6,7 +6,6 @@ import com.erp.muebleria.modules.compras.application.dto.CambiarEstadoProveedorR
 import com.erp.muebleria.modules.compras.application.dto.ProveedorResponseDTO;
 import com.erp.muebleria.modules.compras.domain.entities.Proveedor;
 import com.erp.muebleria.modules.compras.domain.ports.ProveedorRepositoryPort;
-import com.erp.muebleria.modules.compras.infrastructure.persistence.mappers.ProveedorMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CambiarEstadoProveedorUseCase {
 
     private final ProveedorRepositoryPort proveedorRepositoryPort;
-    private final ProveedorMapper proveedorMapper;
+    private final com.erp.muebleria.modules.compras.application.mappers.ProveedorApplicationMapper proveedorMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional

@@ -1,17 +1,18 @@
 package com.erp.muebleria.modules.compras.infrastructure.persistence.mappers;
 
 import com.erp.muebleria.modules.compras.application.dto.ProductoBajoStockResponseDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Component
-public class ProductoBajoStockMapper implements RowMapper<ProductoBajoStockResponseDTO> {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface ProductoBajoStockMapper extends RowMapper<ProductoBajoStockResponseDTO> {
 
     @Override
-    public ProductoBajoStockResponseDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+    default ProductoBajoStockResponseDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         ProductoBajoStockResponseDTO dto = new ProductoBajoStockResponseDTO();
         dto.setProductoId(rs.getLong("producto_id"));
         dto.setSku(rs.getString("sku"));

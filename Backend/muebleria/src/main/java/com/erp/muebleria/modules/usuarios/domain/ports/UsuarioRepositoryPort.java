@@ -15,12 +15,22 @@ import java.util.Optional;
 public interface UsuarioRepositoryPort {
 
     void guardar(Usuario usuario);
+
     Optional<Usuario> buscarPorId(Long id);
+
     Optional<Usuario> buscarPorUsuario(String usuario);
+
     boolean existePorUsuario(String usuario);
+
     Usuario guardarUsuarioModificado(Usuario usuario);
+
     long contarAdministradoresActivos();
+
     List<Usuario> obtenerTodosLosUsuarios();
+
     List<PermisoResponseDTO> obtenerPermisosPorUsuarioId(Long usuarioId);
+
     boolean existeUsuario(Long usuarioId);
+
+    List<PermisoResponseDTO> obtenerPermisos();
 }

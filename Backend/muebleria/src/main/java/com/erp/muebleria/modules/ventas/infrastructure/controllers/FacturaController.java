@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Factura", description = "Gestión de facturas")
-@RequestMapping("api/v1/ventas/facturas")
+@RequestMapping("/api/v1/ventas/facturas")
 @SecurityRequirement(name = "BearerAuth")
 @AllArgsConstructor
 public class FacturaController {

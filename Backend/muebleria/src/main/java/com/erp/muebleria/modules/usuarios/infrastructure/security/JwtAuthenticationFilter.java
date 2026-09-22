@@ -1,6 +1,5 @@
 package com.erp.muebleria.modules.usuarios.infrastructure.security;
 
-import com.erp.muebleria.modules.usuarios.domain.ports.TokenServicePort;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -26,7 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenService tokenService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -36,16 +34,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String token = authHeader.substring(7);
 
-        //* Validar el token y extrear el usaurio
+        // * Validar el token y extrear el usaurio
         if (tokenService.validarToken(token)) {
             String usuario = tokenService.obtenerUsuarioDelToken(token);
 
             if (usuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                //* Extrear permisos del token
+                // * Extrear permisos del token
                 List<String> permisos = tokenService.obtenerPermisosDelToken(token);
 
-                //* Mapear cada codigo de permiso a un objeto GrantedAuthority
+                // * Mapear cada codigo de permiso a un objeto GrantedAuthority
                 List<GrantedAuthority> authorities = permisos != null
                         ? permisos.stream().map(SimpleGrantedAuthority::new).map(GrantedAuthority.class::cast).toList()
                         : List.of();

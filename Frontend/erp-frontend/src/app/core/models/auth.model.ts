@@ -3,6 +3,11 @@ export interface LoginDTO {
   password: string;
 }
 
+export interface AuthResponseDTO {
+  token: string;
+  expiresAt: string;
+}
+
 export interface RecuperarContrasenaDTO {
   usuario: string;
   dpi: string;
@@ -15,4 +20,5 @@ export interface JwtPayload {
   permisos: string[];
   iat: number;
   exp: number;
+  usuarioId?: number;
 }

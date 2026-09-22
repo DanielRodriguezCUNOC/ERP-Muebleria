@@ -1,0 +1,26 @@
+<div class="p-6">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-800">Ventas</h1>
+    <p class="text-slate-600 mt-1">Bienvenido, <span class="font-semibold">{{ username }}</span>. Aquí tienes un resumen de tu área.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ng-container *ngFor="let tile of tiles">
+      <ng-container *ngIf="hasPermission(tile.permissions)">
+        <div *ngIf="tile.link" [routerLink]="tile.link" 
+             class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-md hover:border-blue-400 transition-all duration-200">
+          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4" [innerHTML]="tile.icon"></div>
+          <h3 class="text-lg font-semibold text-slate-800 mb-1">{{ tile.title }}</h3>
+          <p class="text-sm text-slate-500">{{ tile.desc }}</p>
+        </div>
+        <div *ngIf="!tile.link" 
+             class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col items-center text-center relative opacity-80">
+          <span class="absolute top-3 right-3 bg-slate-200 text-slate-600 text-xs px-2 py-1 rounded font-medium">Próximamente</span>
+          <div class="w-12 h-12 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center mb-4" [innerHTML]="tile.icon"></div>
+          <h3 class="text-lg font-semibold text-slate-700 mb-1">{{ tile.title }}</h3>
+          <p class="text-sm text-slate-500">{{ tile.desc }}</p>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

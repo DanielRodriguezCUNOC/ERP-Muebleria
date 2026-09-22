@@ -39,13 +39,8 @@ public class SecurityConfig {
                 ))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/v1/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Permisos Swagger
-                        .requestMatchers("/api/v1/compras/**").hasAnyAuthority("COMPRAS_VER", "COMPRAS_GETIONAR")
-                        .requestMatchers("/api/v1/ventas/**").hasAnyAuthority("VENTAS_VER", "VENTAS_GESTIONAR")
-                        .requestMatchers("/api/v1/inventario/**").hasAnyAuthority("INVENTARIO_VER", "INVENTARIO_GESTIONAR")
-                        .requestMatchers("/api/v1/admin/roles/**").hasAnyAuthority("ROLES_GESTIONAR", "PERMISOS_GESTIONAR")
-                        .requestMatchers("/api/v1/usuarios/**").hasAnyAuthority("USUARIOS_VER", "USUARIOS_GESTIONAR")
-                        .requestMatchers("/api/v1/reportes/**").hasAnyAuthority("REPORTES_VER", "INVENTARIO_GESTIONAR", "COMPRAS_GESTIONAR", "VENTAS_GESTIONAR").requestMatchers("/api/v1/admin/configuracion/**").hasAuthority("CONFIGURACION_GESTIONAR")
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

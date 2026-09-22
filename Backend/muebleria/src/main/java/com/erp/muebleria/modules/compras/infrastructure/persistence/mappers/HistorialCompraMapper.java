@@ -1,17 +1,18 @@
 package com.erp.muebleria.modules.compras.infrastructure.persistence.mappers;
 
 import com.erp.muebleria.modules.compras.application.dto.HistorialComprasResponseDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-@Component
-public class HistorialCompraMapper implements RowMapper<HistorialComprasResponseDTO> {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface HistorialCompraMapper extends RowMapper<HistorialComprasResponseDTO> {
     @Override
-    public HistorialComprasResponseDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+    default HistorialComprasResponseDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         HistorialComprasResponseDTO dto = new HistorialComprasResponseDTO();
         dto.setId(rs.getLong("id"));
         Timestamp timestamp = rs.getTimestamp("fecha_compra");

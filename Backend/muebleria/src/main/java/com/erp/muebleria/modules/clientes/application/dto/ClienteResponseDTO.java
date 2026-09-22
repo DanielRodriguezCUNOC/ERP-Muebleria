@@ -21,6 +21,12 @@ public class ClienteResponseDTO {
     private String mensaje;
 
     public ClienteResponseDTO(Long id, String nombre, String nit, String direccion, String telefono, Boolean activo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.nit = nit;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.activo = activo;
     }
 
     public static ClienteResponseDTO desdeDominio(Cliente cliente) {

@@ -1,25 +1,36 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../enviroments/environment';
-import { ConsultaResumenVentasRequestDTO, ConsultaVentasPeriodoRequestDTO, MovimientoProductoResponseDTO, ProductoCatalogoResponseDTO, ResumenVentasPeriodoResponseDTO, TopClientesResponseDTO, TopProductosMasIngresosResponseDTO, VentasPorPeriodoResponseDTO } from '../models/reportes.model';
+import { environment } from '../../../../environments/environment';
+import { ApiClientService } from '../../../core/services/api-client.service';
+import {
+  ConsultaComprasRequestDTO,
+  ConsultaResumenVentasRequestDTO,
+  ConsultaVentasPeriodoRequestDTO,
+  MovimientoProductoResponseDTO,
+  OperacionEmpleadoResponseDTO,
+  ProductoCatalogoResponseDTO,
+  ProveedorResponseDTO,
+  ReporteCompraResponseDTO,
+  ResumenVentasPeriodoResponseDTO,
+  TopClientesResponseDTO,
+  TopProductosMasIngresosResponseDTO,
+  UsuarioResponseDTO,
+  VentasPorPeriodoResponseDTO
+} from '../models/reportes.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportesService {
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/reportes`;
+  private readonly apiClient = inject(ApiClientService);
+  private readonly baseUrl = `${environment.apiUrl}/reportes`;
+  private readonly comprasBaseUrl = `${environment.apiUrl}/compras`;
+  private readonly inventarioBaseUrl = `${environment.apiUrl}/inventario`;
+  private readonly usuariosBaseUrl = `${environment.apiUrl}/usuarios`;
 
   obtenerTopClientes(): Observable<TopClientesResponseDTO[]> {
-    return this.http.get<TopClientesResponseDTO[]>(`${this.apiUrl}/top-clientes`);
-  }
-
-  //? Metodo para exportar el reporte de top clientes en formato PDF desde el backend.
-  exportarTopClientesPdf(): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/top-clientes/pdf`, {
-      responseType: 'blob'
-    });
+    return this.apiClient.get<TopClientesResponseDTO[]>(`${this.baseUrl}/top-clientes`);
   }
 
   obtenerVentasPorRangoFecha(dto: ConsultaVentasPeriodoRequestDTO): Observable<VentasPorPeriodoResponseDTO[]> {
@@ -27,28 +38,11 @@ export class ReportesService {
     if (dto.fechaInicio) params = params.set('fechaInicio', dto.fechaInicio);
     if (dto.fechaFin) params = params.set('fechaFin', dto.fechaFin);
 
-    return this.http.get<VentasPorPeriodoResponseDTO[]>(`${this.apiUrl}/ventas-por-rango-de-fechas`, { params });
-  }
-
-  exportarVentasPorPeriodoPdf(dto: ConsultaVentasPeriodoRequestDTO): Observable<Blob> {
-    let params = new HttpParams();
-    if (dto.fechaInicio) params = params.set('fechaInicio', dto.fechaInicio);
-    if (dto.fechaFin) params = params.set('fechaFin', dto.fechaFin);
-
-    return this.http.get(`${this.apiUrl}/ventas-por-rango-de-fechas/pdf`, {
-      params,
-      responseType: 'blob'
-    });
+    return this.apiClient.get<VentasPorPeriodoResponseDTO[]>(`${this.baseUrl}/ventas-por-rango-de-fechas`, { params });
   }
 
   obtenerTopProductosMasIngresos(): Observable<TopProductosMasIngresosResponseDTO[]> {
-    return this.http.get<TopProductosMasIngresosResponseDTO[]>(`${this.apiUrl}/top-productos-mas-ingresos`);
-  }
-
-  exportarTopProductosMasIngresosPdf(): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/top-productos-mas-ingresos/pdf`, {
-      responseType: 'blob'
-    });
+    return this.apiClient.get<TopProductosMasIngresosResponseDTO[]>(`${this.baseUrl}/top-productos-mas-ingresos`);
   }
 
   obtenerResumenVentasPorPeriodo(dto: ConsultaResumenVentasRequestDTO): Observable<ResumenVentasPeriodoResponseDTO[]> {
@@ -57,39 +51,46 @@ export class ReportesService {
     if (dto.fechaFin) params = params.set('fechaFin', dto.fechaFin);
     if (dto.agrupacion) params = params.set('agrupacion', dto.agrupacion);
 
-    return this.http.get<ResumenVentasPeriodoResponseDTO[]>(`${this.apiUrl}/resumen-ventas-por-periodo`, { params });
+    return this.apiClient.get<ResumenVentasPeriodoResponseDTO[]>(`${this.baseUrl}/resumen-ventas-por-periodo`, { params });
   }
 
-  exportarResumenVentasPorPeriodoPdf(dto: ConsultaResumenVentasRequestDTO): Observable<Blob> {
-    let params = new HttpParams();
-    if (dto.fechaInicio) params = params.set('fechaInicio', dto.fechaInicio);
-    if (dto.fechaFin) params = params.set('fechaFin', dto.fechaFin);
-    if (dto.agrupacion) params = params.set('agrupacion', dto.agrupacion);
-
-    return this.http.get(`${this.apiUrl}/resumen-ventas-por-periodo/pdf`, {
-      params,
-      responseType: 'blob'
-    });
-  }
-
-  //* Buscar catálogo de productos
   buscarProductosCatalogo(nombre?: string): Observable<ProductoCatalogoResponseDTO[]> {
     let params = new HttpParams();
     if (nombre && nombre.trim().length >= 2) {
       params = params.set('nombre', nombre.trim());
     }
-    return this.http.get<ProductoCatalogoResponseDTO[]>(`${this.apiUrl}/productos`, { params });
+    return this.apiClient.get<ProductoCatalogoResponseDTO[]>(`${this.inventarioBaseUrl}/productos`, { params });
   }
 
-  //* Obtener historial de movimientos de un producto
   obtenerMovimientosProducto(productoId: number): Observable<MovimientoProductoResponseDTO[]> {
-    return this.http.get<MovimientoProductoResponseDTO[]>(`${this.apiUrl}/reportes/productos/${productoId}/movimientos`);
+    return this.apiClient.get<MovimientoProductoResponseDTO[]>(`${this.baseUrl}/productos/${productoId}/movimientos`);
   }
 
-  //* Descargar el historial de movimientos 
-  exportarMovimientosProductoPdf(productoId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/reportes/productos/${productoId}/movimientos/pdf`, {
-      responseType: 'blob'
-    });
+  obtenerComprasPorRangoDeFechas(dto: ConsultaComprasRequestDTO): Observable<ReporteCompraResponseDTO[]> {
+    let params = new HttpParams();
+    if (dto.fechaInicio) params = params.set('fechaInicio', dto.fechaInicio);
+    if (dto.fechaFin) params = params.set('fechaFin', dto.fechaFin);
+
+    return this.apiClient.get<ReporteCompraResponseDTO[]>(`${this.baseUrl}/compras-por-rango-de-fechas`, { params });
+  }
+
+  buscarProveedores(nombre?: string): Observable<ProveedorResponseDTO[]> {
+    let params = new HttpParams();
+    if (nombre && nombre.trim().length > 0) {
+      params = params.set('nombre', nombre.trim());
+    }
+    return this.apiClient.get<ProveedorResponseDTO[]>(`${this.comprasBaseUrl}/proveedores`, { params });
+  }
+
+  obtenerComprasPorProveedor(proveedorId: number): Observable<ReporteCompraResponseDTO[]> {
+    return this.apiClient.get<ReporteCompraResponseDTO[]>(`${this.baseUrl}/proveedores/${proveedorId}/compras`);
+  }
+
+  obtenerTodosLosEmpleados(): Observable<UsuarioResponseDTO[]> {
+    return this.apiClient.get<UsuarioResponseDTO[]>(this.usuariosBaseUrl);
+  }
+
+  obtenerOperacionesPorEmpleado(empleadoId: number): Observable<OperacionEmpleadoResponseDTO[]> {
+    return this.apiClient.get<OperacionEmpleadoResponseDTO[]>(`${this.baseUrl}/empleados/${empleadoId}/operaciones`);
   }
 }

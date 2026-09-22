@@ -13,12 +13,13 @@ import com.erp.muebleria.modules.ventas.infrastructure.persistence.entities.Vent
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import com.erp.muebleria.modules.ventas.application.mappers.VentaApplicationMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface VentaMapper {
+public interface VentaMapper extends VentaApplicationMapper {
 
     @Mapping(target = "detalles", source = "detalles")
     VentaJpaEntity toEntity(Venta domain);

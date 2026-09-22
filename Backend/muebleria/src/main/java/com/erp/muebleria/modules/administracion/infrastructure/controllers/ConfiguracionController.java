@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping ("/api/v1/admin/configuracion")
+@RequestMapping("/api/v1/admin/configuracion")
 @Tag(name = "Configuración", description = "Gestión de la configuración del sistema")
 @SecurityRequirement(name = "BearerAuth")
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class ConfiguracionController {
     private final ActualizarConfiguracionUseCase actualizarConfiguracionUseCase;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMINISTRACION')")
+    @PreAuthorize("hasAuthority('CONFIGURACION_GESTIONAR')")
     @Operation(summary = "Obtener Configuración", description = "Obtiene los parámetros globales de IVA, facturación y método de valoración")
     public ResponseEntity<ConfiguracionSistemaResponseDTO> obtenerConfiguracion() {
         return ResponseEntity.ok(obtenerConfiguracionUseCase.ejecutar());

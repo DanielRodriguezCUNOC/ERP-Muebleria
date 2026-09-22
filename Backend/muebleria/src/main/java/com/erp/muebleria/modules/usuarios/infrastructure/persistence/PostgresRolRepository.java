@@ -23,30 +23,32 @@ public class PostgresRolRepository implements RolRepositoryPort {
     private final SpringDataRolRepository springDataRolRepository;
     private final SpringDataPermisoRepository springDataPermisoRepository;
     private final SpringDataUsuarioRepository springDataUsuarioRepository;
+    private final RolMapper rolMapper;
+    private final PermisoMapper permisoMapper;
 
     @Override
     public void guardar(Rol rol) {
-        RolJpaEntity entity = RolMapper.toEntity(rol);
+        RolJpaEntity entity = rolMapper.toEntity(rol);
         springDataRolRepository.save(entity);
     }
 
     @Override
     public Optional<Rol> buscarPorId(Long id) {
         return springDataRolRepository.findById(id)
-                .map(RolMapper::toDomain);
+                .map(rolMapper::toDomain);
     }
 
     @Override
     public Optional<Permiso> buscarPermisoPorId(Long id) {
         return springDataPermisoRepository.findById(id)
-                .map(PermisoMapper::permisoToDomain);
+                .map(permisoMapper::permisoToDomain);
     }
 
     @Override
     public List<Permiso> buscarPermisosPorIds(List<Long> ids) {
         return springDataPermisoRepository.findAllById(ids)
                 .stream()
-                .map(PermisoMapper::permisoToDomain)
+                .map(permisoMapper::permisoToDomain)
                 .toList();
     }
 
@@ -73,7 +75,7 @@ public class PostgresRolRepository implements RolRepositoryPort {
     @Override
     public List<RolResponseDTO> obtenerTodosLosRoles() {
         return springDataRolRepository.findAll().stream()
-                .map(RolMapper::toResponseDTO)
+                .map(rolMapper::toResponseDTO)
                 .toList();
     }
 }

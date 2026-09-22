@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UsuarioResponseDTO {
     private Long id;
-    private String name;
+    private String nombre;
     private String usuario;
     private String dpi;
     private String numeroTelefono;
@@ -20,7 +20,7 @@ public class UsuarioResponseDTO {
     public static UsuarioResponseDTO desdeDominio(Usuario usuario) {
         return new UsuarioResponseDTO(
                 usuario.getId(),
-                usuario.getName(),
+                usuario.getNombre(),
                 usuario.getUsuario(),
                 usuario.getDpi(),
                 usuario.getNumeroTelefono(),

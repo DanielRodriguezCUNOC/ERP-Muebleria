@@ -14,8 +14,8 @@ public class UsuarioJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "nombre", nullable = false)
+    private String nombre;
 
     @Column(nullable = false, unique = true)
     private String usuario;
@@ -29,7 +29,7 @@ public class UsuarioJpaEntity {
     @Column(name = "numero_telefono")
     private String numeroTelefono;
 
-    @Column(name = "active", nullable = false)
+    @Column(name = "activo", nullable = false)
     private Boolean activo = true;
 
     @Column(name = "area_id")

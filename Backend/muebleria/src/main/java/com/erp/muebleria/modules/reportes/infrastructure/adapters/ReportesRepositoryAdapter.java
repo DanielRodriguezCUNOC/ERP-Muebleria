@@ -28,7 +28,7 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
     private final ReporteCompraMapper reporteCompraMapper;
 
     @Override
-    public List<TopCliente> obtenerTopClientesPorMonto(int limite) {
+    public org.springframework.data.domain.Page<TopCliente> obtenerTopClientesPorMonto(org.springframework.data.domain.Pageable pageable) {
         //* Creamos la consulta SQSL para obtener los clientes con más compras por monto total
         String sql = """
                 SELECT 
@@ -40,11 +40,18 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 JOIN venta v ON c.id = v.cliente_id
                 GROUP BY c.id, c.nombre, c.nit
                 ORDER BY monto_total DESC
-                LIMIT ?
                 """;
 
-        //* Ejecutamos la consulta y mapeamos los resultados a objetos TopCliente
-        return jdbcTemplate.query(sql,topClienteMapper, limite);
+        int limit = pageable.getPageSize();
+        int offset = (int) pageable.getOffset();
+        String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
+        java.util.List<TopCliente> content = jdbcTemplate.query(pagedSql, topClienteMapper);
+
+        // Count total
+        String countSql = "SELECT COUNT(DISTINCT c.id) FROM cliente c JOIN venta v ON c.id = v.cliente_id";
+        long total = jdbcTemplate.queryForObject(countSql, Long.class);
+
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
     }
 
     @Override
@@ -68,7 +75,7 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
     }
 
     @Override
-    public List<TopProductosMasIngresos> obtenerTopProductosMasIngresos(int limite) {
+    public org.springframework.data.domain.Page<TopProductosMasIngresos> obtenerTopProductosMasIngresos(org.springframework.data.domain.Pageable pageable) {
         String sql = """
                 SELECT
                 p.id AS producto_id,
@@ -80,10 +87,17 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 JOIN venta v ON dv.venta_id = v.id
                 GROUP BY p.id, p.nombre
                 ORDER BY total_ingresos DESC
-                LIMIT ?
                 """;
 
-        return jdbcTemplate.query(sql, topProductosMasIngresosMapper, limite);
+        int limit = pageable.getPageSize();
+        int offset = (int) pageable.getOffset();
+        String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
+        java.util.List<TopProductosMasIngresos> content = jdbcTemplate.query(pagedSql, topProductosMasIngresosMapper);
+
+        String countSql = "SELECT COUNT(DISTINCT p.id) FROM producto p JOIN detalle_venta dv ON p.id = dv.producto_id JOIN venta v ON dv.venta_id = v.id";
+        long total = jdbcTemplate.queryForObject(countSql, Long.class);
+
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
     }
 
     @Override
@@ -111,7 +125,7 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
     }
 
     @Override
-    public List<MovimientoProducto> obtenerMovimientosPorProducto(Long productoId) {
+    public org.springframework.data.domain.Page<MovimientoProducto> obtenerMovimientosPorProducto(Long productoId, org.springframework.data.domain.Pageable pageable) {
         String sql = """
                 SELECT 
                 il.id,
@@ -127,11 +141,20 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 WHERE i.producto_id = ?
                 ORDER BY il.creado_en DESC
                 """;
-        return jdbcTemplate.query(sql, movimientoProductoMapper, productoId);
+
+        int limit = pageable.getPageSize();
+        int offset = (int) pageable.getOffset();
+        String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
+
+        java.util.List<MovimientoProducto> content = jdbcTemplate.query(pagedSql, movimientoProductoMapper, productoId);
+        String countSql = "SELECT COUNT(*) FROM inventario_log il JOIN inventario i ON il.inventario_id = i.id WHERE i.producto_id = ?";
+        long total = jdbcTemplate.queryForObject(countSql, Long.class, productoId);
+
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
     }
 
     @Override
-    public List<ReporteCompra> obtenerComprasPorRangoDeFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+    public org.springframework.data.domain.Page<ReporteCompra> obtenerComprasPorRangoDeFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin, org.springframework.data.domain.Pageable pageable) {
         String sql = """
                 SELECT 
                 c.id AS compra_id,
@@ -145,12 +168,19 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 WHERE c.fecha_compra BETWEEN ? AND ?
                 ORDER BY c.fecha_compra DESC
                 """;
+        int limit = pageable.getPageSize();
+        int offset = (int) pageable.getOffset();
+        String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
+        java.util.List<ReporteCompra> content = jdbcTemplate.query(pagedSql, reporteCompraMapper, fechaInicio, fechaFin);
 
-        return jdbcTemplate.query(sql,reporteCompraMapper, fechaInicio, fechaFin);
+        String countSql = "SELECT COUNT(*) FROM compra c WHERE c.fecha_compra BETWEEN ? AND ?";
+        long total = jdbcTemplate.queryForObject(countSql, Long.class, fechaInicio, fechaFin);
+
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
     }
 
     @Override
-    public List<ReporteCompra> obtenerComprasPorProveedor(Long proveedorId) {
+    public org.springframework.data.domain.Page<ReporteCompra> obtenerComprasPorProveedor(Long proveedorId, org.springframework.data.domain.Pageable pageable) {
         String sql = """
                 SELECT
                 c.id AS compra_id,
@@ -164,11 +194,19 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 WHERE c.proveedor_id = ?
                 ORDER BY c.fecha_compra DESC
                 """;
-        return jdbcTemplate.query(sql, reporteCompraMapper, proveedorId);
+        int limit = pageable.getPageSize();
+        int offset = (int) pageable.getOffset();
+        String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
+        java.util.List<ReporteCompra> content = jdbcTemplate.query(pagedSql, reporteCompraMapper, proveedorId);
+
+        String countSql = "SELECT COUNT(*) FROM compra c WHERE c.proveedor_id = ?";
+        long total = jdbcTemplate.queryForObject(countSql, Long.class, proveedorId);
+
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
     }
 
     @Override
-    public List<OperacionEmpleadoDTO> obtenerOperacionesPorEmpleado(Long empleadoId) {
+    public org.springframework.data.domain.Page<OperacionEmpleadoDTO> obtenerOperacionesPorEmpleado(Long empleadoId, org.springframework.data.domain.Pageable pageable) {
         String sql = """
                 SELECT 
                     id, 
@@ -181,7 +219,14 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 WHERE empleado_id = ?
                 ORDER BY fecha DESC
                 """;
+        int limit = pageable.getPageSize();
+        int offset = (int) pageable.getOffset();
+        String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
 
-        return jdbcTemplate.query(sql, operacionEmpleadoMapper, empleadoId);
+        java.util.List<OperacionEmpleadoDTO> content = jdbcTemplate.query(pagedSql, operacionEmpleadoMapper, empleadoId);
+        String countSql = "SELECT COUNT(*) FROM bitacora_operacion WHERE empleado_id = ?";
+        long total = jdbcTemplate.queryForObject(countSql, Long.class, empleadoId);
+
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
     }
 }

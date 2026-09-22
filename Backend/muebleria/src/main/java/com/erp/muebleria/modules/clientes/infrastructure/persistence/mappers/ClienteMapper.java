@@ -6,9 +6,10 @@ import com.erp.muebleria.modules.clientes.infrastructure.persistence.entities.Cl
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import com.erp.muebleria.modules.clientes.application.mappers.ClienteApplicationMapper;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface ClienteMapper {
+public interface ClienteMapper extends ClienteApplicationMapper {
 
     ClienteJpaEntity toEntity(Cliente domain);
 

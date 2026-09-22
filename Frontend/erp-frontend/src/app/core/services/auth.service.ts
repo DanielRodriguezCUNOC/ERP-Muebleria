@@ -1,39 +1,38 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, finalize, Observable, of, tap } from 'rxjs';
-import { environment } from '../../../enviroments/environment';
-import { LoginDTO, RecuperarContrasenaDTO } from '../models/auth.model';
+import { environment } from '../../../environments/environment';
+import { AuthResponseDTO, LoginDTO, RecuperarContrasenaDTO } from '../models/auth.model';
+import { ApiClientService } from './api-client.service';
 import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly http = inject(HttpClient);
+  private readonly apiClient = inject(ApiClientService);
   private readonly tokenService = inject(TokenService);
   private readonly router = inject(Router);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
-  login(dto: LoginDTO): Observable<string> {
-    return this.http.post(`${this.apiUrl}/login`, dto, { responseType: 'text' }).pipe(
-      tap((token) => {
-        this.tokenService.setToken(token);
+  login(dto: LoginDTO): Observable<AuthResponseDTO> {
+    return this.apiClient.post<AuthResponseDTO>(`${this.apiUrl}/login`, dto).pipe(
+      tap((response) => {
+        this.tokenService.setToken(response.token);
       })
     );
   }
 
   logout(): void {
+    const token = this.tokenService.getToken();
 
-    if (!this.tokenService.getToken()) {
+    if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
-    //* Se activa authInterceptor para que se ejecute el logout en el backend
-    this.http.post<void>(`${this.apiUrl}/logout`, {}).pipe(
+    this.apiClient.post<void>(`${this.apiUrl}/logout`, {}).pipe(
       catchError((error) => {
-        //* Atrapar el error proveniente del backend
         console.error('Error del servidor al intentar cerrar sesión:', error);
         return of(null);
       }),
@@ -50,11 +49,15 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!this.tokenService.getToken();
+    return this.tokenService.isTokenValid();
   }
 
-  //* Metodo para recuperación de contraseña
   recuperarContrasena(dto: RecuperarContrasenaDTO): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/recuperar-contrasena`, dto);
+    return this.apiClient.post<void>(`${this.apiUrl}/recuperar-contrasena`, dto);
+  }
+
+  getUsuarioId(): number | null {
+    const payload = this.tokenService.getDecodedToken();
+    return payload?.usuarioId ?? null;
   }
 }

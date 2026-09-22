@@ -5,7 +5,6 @@ package com.erp.muebleria.modules.clientes.application.useCases;
 import com.erp.muebleria.modules.clientes.application.dto.ClienteResponseDTO;
 import com.erp.muebleria.modules.clientes.domain.entities.Cliente;
 import com.erp.muebleria.modules.clientes.domain.ports.ClienteRepositoryPort;
-import com.erp.muebleria.modules.clientes.infrastructure.persistence.mappers.ClienteMapper;
 import com.erp.muebleria.modules.common.domain.events.OperacionRealizadaEvent;
 import com.erp.muebleria.modules.common.domain.exceptions.ReglaNegocioException;
 import com.erp.muebleria.modules.clientes.application.dto.RegistrarClienteRequestDTO;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RegistrarClienteUseCase {
 
     private final ClienteRepositoryPort clienteRepositoryPort;
-    private final ClienteMapper clienteMapper;
+    private final com.erp.muebleria.modules.clientes.application.mappers.ClienteApplicationMapper clienteMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional

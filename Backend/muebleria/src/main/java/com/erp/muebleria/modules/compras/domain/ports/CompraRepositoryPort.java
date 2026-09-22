@@ -14,6 +14,6 @@ public interface CompraRepositoryPort {
     Optional<Compra> buscarPorId(Long id);
     void eliminarCompra(Long id);
     boolean validarLotesSinConsumir(Long compraId);
-    List<HistorialComprasResponseDTO> consultarHistorial(FiltroHistorialCompraDTO filtro);
+    org.springframework.data.domain.Page<HistorialComprasResponseDTO> consultarHistorial(FiltroHistorialCompraDTO filtro, org.springframework.data.domain.Pageable pageable);
     List<ProductoBajoStockResponseDTO> consultarProductosBajoStock();
 }

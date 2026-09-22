@@ -11,12 +11,12 @@ import java.util.List;
  * Define los métodos para los reportes que el administrador puede solicitar.
  */
 public interface ReportesGerencialesRepositoryPort {
-    List<TopCliente> obtenerTopClientesPorMonto(int limite);
+    org.springframework.data.domain.Page<TopCliente> obtenerTopClientesPorMonto(org.springframework.data.domain.Pageable pageable);
     List<VentasPorPeriodo> obtenerVentasPorPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin);
-    List<TopProductosMasIngresos> obtenerTopProductosMasIngresos(int limite);
+    org.springframework.data.domain.Page<TopProductosMasIngresos> obtenerTopProductosMasIngresos(org.springframework.data.domain.Pageable pageable);
     List<ResumenVentasPeriodo> obtenerResumenVentasAgrupadoPorPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin, String agrupacion);
-    List<MovimientoProducto> obtenerMovimientosPorProducto(Long productoId);
-    List<ReporteCompra> obtenerComprasPorRangoDeFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin);
-    List<ReporteCompra> obtenerComprasPorProveedor(Long proveedorId);
-    List<OperacionEmpleadoDTO> obtenerOperacionesPorEmpleado(Long empleadoId);
+    org.springframework.data.domain.Page<MovimientoProducto> obtenerMovimientosPorProducto(Long productoId, org.springframework.data.domain.Pageable pageable);
+    org.springframework.data.domain.Page<ReporteCompra> obtenerComprasPorRangoDeFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin, org.springframework.data.domain.Pageable pageable);
+    org.springframework.data.domain.Page<ReporteCompra> obtenerComprasPorProveedor(Long proveedorId, org.springframework.data.domain.Pageable pageable);
+    org.springframework.data.domain.Page<OperacionEmpleadoDTO> obtenerOperacionesPorEmpleado(Long empleadoId, org.springframework.data.domain.Pageable pageable);
 }

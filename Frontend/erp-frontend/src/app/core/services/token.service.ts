@@ -7,7 +7,6 @@ import { JwtPayload } from '../models/auth.model';
 export class TokenService {
   private readonly TOKEN_KEY = 'jwt_token';
 
-  // Signal reactiva para almacenar el payload decodificado
   currentUserPayload = signal<JwtPayload | null>(this.getDecodedToken());
 
   setToken(token: string): void {
@@ -26,7 +25,18 @@ export class TokenService {
 
   getDecodedToken(): JwtPayload | null {
     const token = this.getToken();
-    return token ? this.decodeToken(token) : null;
+    if (!token) {
+      return null;
+    }
+
+    if (this.isTokenExpired(token)) {
+      this.removeToken();
+      return null;
+    }
+
+    const payload = this.decodeToken(token);
+    this.currentUserPayload.set(payload);
+    return payload;
   }
 
   getAuthorities(): string[] {
@@ -41,6 +51,11 @@ export class TokenService {
     return this.currentUserPayload()?.sub ?? '';
   }
 
+  isTokenValid(): boolean {
+    const token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
+  }
+
   private decodeToken(token: string): JwtPayload | null {
     try {
       const base64Url = token.split('.')[1];
@@ -51,10 +66,20 @@ export class TokenService {
           .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
           .join('')
       );
-      return JSON.parse(jsonPayload);
+      return JSON.parse(jsonPayload) as JwtPayload;
     } catch (e) {
       console.error('Error al decodificar JWT', e);
       return null;
     }
+  }
+
+  private isTokenExpired(token: string): boolean {
+    const payload = this.decodeToken(token);
+    if (!payload || !payload.exp) {
+      return true;
+    }
+
+    const expirationTimestamp = payload.exp * 1000;
+    return Date.now() >= expirationTimestamp;
   }
 }

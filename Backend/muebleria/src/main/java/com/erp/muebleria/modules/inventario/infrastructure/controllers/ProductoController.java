@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @Tag(name = "Productos", description = "Gestión de productos")
-@RequestMapping("api/v1/inventario/productos")
+@RequestMapping("/api/v1/inventario/productos")
 @SecurityRequirement(name = "BearerAuth")
 @AllArgsConstructor
 public class ProductoController {

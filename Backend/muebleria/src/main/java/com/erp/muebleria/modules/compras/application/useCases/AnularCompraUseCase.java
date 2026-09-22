@@ -7,10 +7,10 @@ import com.erp.muebleria.modules.compras.application.dto.CompraResponseDTO;
 import com.erp.muebleria.modules.compras.domain.entities.Compra;
 import com.erp.muebleria.modules.compras.domain.ports.CompraRepositoryPort;
 import com.erp.muebleria.modules.compras.domain.ports.InventarioModuloPort;
-import com.erp.muebleria.modules.compras.infrastructure.persistence.mappers.CompraMapStructMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -21,8 +21,8 @@ public class AnularCompraUseCase {
     private final CompraRepositoryPort compraRepositoryPort;
     private final InventarioModuloPort inventarioModuloPort;
     private final ApplicationEventPublisher eventPublisher;
-    private final CompraMapStructMapper compraMapper;
 
+    @Transactional
     public CompraResponseDTO ejecutar(AnularCompraRequestDTO request) {
 
         //* Validar la existencia de la compra
@@ -53,6 +53,16 @@ public class AnularCompraUseCase {
         ));
 
         //* Generar DTO de respuesta
-        return compraMapper.toResponseDto(compra, "Compra anulada exitosamente");
+        return toResponseDto(compra, "Compra anulada exitosamente");
+    }
+
+    private CompraResponseDTO toResponseDto(Compra compra, String mensaje) {
+        return new CompraResponseDTO(
+                compra.getId(),
+                compra.getProveedorIds() != null ? compra.getProveedorIds().stream().toList() : java.util.List.of(),
+                compra.getEmpleadoId(),
+                compra.getFechaCompra(),
+                mensaje
+        );
     }
 }
