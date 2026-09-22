@@ -16,4 +16,12 @@ export JWT_EXPIRATION="86400000"
 # ==========================================
 # Levantar la app
 # ==========================================
-mvn spring-boot:run -DskipTest
+set -e
+
+cd "$(dirname "$0")"
+
+echo "→ Limpiando target/ y compilando..."
+mvn clean compile -DskipTests
+
+echo "→ Levantando Spring Boot..."
+mvn spring-boot:run -DskipTests

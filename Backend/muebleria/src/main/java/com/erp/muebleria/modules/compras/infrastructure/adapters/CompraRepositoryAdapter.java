@@ -147,7 +147,7 @@ public class CompraRepositoryAdapter implements CompraRepositoryPort {
 
     @Override
     public List<ProductoBajoStockResponseDTO> consultarProductosBajoStock() {
-        String sql = "SELECT p.id AS producto_id, p.sku, p.nombre, p.categoria " +
+        String sql = "SELECT p.id AS producto_id, p.sku, p.nombre, p.categoria, " +
                 "COALESCE(i.existencia, 0) AS existencia_actual, " +
                 "p.existencia_minima, " +
                 "GREATEST(0, p.existencia_minima - COALESCE(i.existencia, 0)) AS cantidad_sugerida " +

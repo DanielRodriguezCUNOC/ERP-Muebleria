@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-
+import { TokenService } from '../../../core/services/token.service';
+import { redireccionPorArea } from '../../../core/utils/redireccionPorArea';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -13,6 +14,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly tokenService = inject(TokenService);
   private readonly router = inject(Router);
 
   //* Estados locales con Signals
@@ -38,7 +40,8 @@ export class LoginComponent {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/inventario']);
+        const payload = this.tokenService.getDecodedToken();
+        this.router.navigate([redireccionPorArea(payload?.areaId)]);
       },
       error: (err) => {
         this.isLoading.set(false);

@@ -49,6 +49,7 @@ public class JwtTokenService implements TokenServicePort {
 
         return Jwts.builder().setSubject(usuario.getUsuario())
                 .claim("rol", usuario.getRol() != null ? usuario.getRol().getNombre() : "SIN_ROL")
+                .claim("areaId", usuario.getAreaId())
                 .claim("permisos", permisos).setIssuedAt(ahora).setExpiration(expiracion).signWith(secretKey).compact();
     }
 
