@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ApiClientService } from '../../../core/services/api-client.service';
+import { Page } from '../../../shared/models/page.model';
 import {
   RegistrarCompraRequestDTO,
   CompraResponseDTO,
@@ -58,7 +59,9 @@ export class ComprasService {
       params = params.set('empleadoId', filtro.empleadoId.toString());
     }
 
-    return this.apiClient.get<HistorialComprasResponseDTO[]>(this.baseUrl, { params });
+    return this.apiClient.get<Page<HistorialComprasResponseDTO>>(this.baseUrl, { params }).pipe(
+      map(res => res.content)
+    );
   }
 
   anularCompra(request: AnularCompraRequestDTO): Observable<CompraResponseDTO> {

@@ -51,17 +51,6 @@ export interface ProductoCatalogoResponseDTO {
   activo: boolean;
 }
 
-export interface ProductoCatalogoResponseDTO {
-  id: number;
-  sku: string;
-  nombre: string;
-  descripcion: string;
-  categoria: string;
-  precioVenta: number;
-  existenciaTotal: number;
-  activo: boolean;
-}
-
 export interface MovimientoProductoResponseDTO {
   id: number;
   productoId: number;
@@ -96,18 +85,9 @@ export interface ProveedorResponseDTO {
   activo: boolean;
 }
 
-export interface ReporteCompraResponseDTO {
-  compraId: number;
-  proveedorId: number;
-  nombreProveedor: string;
-  fecha: string;
-  total: number;
-  estado: string;
-}
-
 export interface UsuarioResponseDTO {
   id: number;
-  name: string;
+  nombre: string;
   usuario: string;
   dpi: string;
   numeroTelefono: string;

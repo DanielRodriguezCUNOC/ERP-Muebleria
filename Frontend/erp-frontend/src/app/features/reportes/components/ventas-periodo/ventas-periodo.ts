@@ -50,7 +50,11 @@ export class VentasPeriodoComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const dto: ConsultaVentasPeriodoRequestDTO = this.filterForm.getRawValue();
+    const raw = this.filterForm.getRawValue();
+    const dto: ConsultaVentasPeriodoRequestDTO = {
+      fechaInicio: raw.fechaInicio.includes('T') ? raw.fechaInicio : `${raw.fechaInicio}T00:00:00`,
+      fechaFin: raw.fechaFin.includes('T') ? raw.fechaFin : `${raw.fechaFin}T23:59:59`
+    };
 
     this.reportesService.obtenerVentasPorRangoFecha(dto).subscribe({
       next: (data) => {

@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ApiClientService } from '../../../core/services/api-client.service';
+import { Page } from '../../../shared/models/page.model';
 import {
   ConsultaComprasRequestDTO,
   ConsultaResumenVentasRequestDTO,
@@ -30,7 +31,9 @@ export class ReportesService {
   private readonly usuariosBaseUrl = `${environment.apiUrl}/usuarios`;
 
   obtenerTopClientes(): Observable<TopClientesResponseDTO[]> {
-    return this.apiClient.get<TopClientesResponseDTO[]>(`${this.baseUrl}/top-clientes`);
+    return this.apiClient.get<Page<TopClientesResponseDTO>>(`${this.baseUrl}/top-clientes`).pipe(
+      map(res => res.content)
+    );
   }
 
   obtenerVentasPorRangoFecha(dto: ConsultaVentasPeriodoRequestDTO): Observable<VentasPorPeriodoResponseDTO[]> {
@@ -42,7 +45,9 @@ export class ReportesService {
   }
 
   obtenerTopProductosMasIngresos(): Observable<TopProductosMasIngresosResponseDTO[]> {
-    return this.apiClient.get<TopProductosMasIngresosResponseDTO[]>(`${this.baseUrl}/top-productos-mas-ingresos`);
+    return this.apiClient.get<Page<TopProductosMasIngresosResponseDTO>>(`${this.baseUrl}/top-productos-mas-ingresos`).pipe(
+      map(res => res.content)
+    );
   }
 
   obtenerResumenVentasPorPeriodo(dto: ConsultaResumenVentasRequestDTO): Observable<ResumenVentasPeriodoResponseDTO[]> {
@@ -63,7 +68,9 @@ export class ReportesService {
   }
 
   obtenerMovimientosProducto(productoId: number): Observable<MovimientoProductoResponseDTO[]> {
-    return this.apiClient.get<MovimientoProductoResponseDTO[]>(`${this.baseUrl}/productos/${productoId}/movimientos`);
+    return this.apiClient.get<Page<MovimientoProductoResponseDTO>>(`${this.baseUrl}/productos/${productoId}/movimientos`).pipe(
+      map(res => res.content)
+    );
   }
 
   obtenerComprasPorRangoDeFechas(dto: ConsultaComprasRequestDTO): Observable<ReporteCompraResponseDTO[]> {
@@ -71,7 +78,9 @@ export class ReportesService {
     if (dto.fechaInicio) params = params.set('fechaInicio', dto.fechaInicio);
     if (dto.fechaFin) params = params.set('fechaFin', dto.fechaFin);
 
-    return this.apiClient.get<ReporteCompraResponseDTO[]>(`${this.baseUrl}/compras-por-rango-de-fechas`, { params });
+    return this.apiClient.get<Page<ReporteCompraResponseDTO>>(`${this.baseUrl}/compras-por-rango-de-fechas`, { params }).pipe(
+      map(res => res.content)
+    );
   }
 
   buscarProveedores(nombre?: string): Observable<ProveedorResponseDTO[]> {
@@ -83,7 +92,9 @@ export class ReportesService {
   }
 
   obtenerComprasPorProveedor(proveedorId: number): Observable<ReporteCompraResponseDTO[]> {
-    return this.apiClient.get<ReporteCompraResponseDTO[]>(`${this.baseUrl}/proveedores/${proveedorId}/compras`);
+    return this.apiClient.get<Page<ReporteCompraResponseDTO>>(`${this.baseUrl}/proveedores/${proveedorId}/compras`).pipe(
+      map(res => res.content)
+    );
   }
 
   obtenerTodosLosEmpleados(): Observable<UsuarioResponseDTO[]> {
@@ -91,6 +102,8 @@ export class ReportesService {
   }
 
   obtenerOperacionesPorEmpleado(empleadoId: number): Observable<OperacionEmpleadoResponseDTO[]> {
-    return this.apiClient.get<OperacionEmpleadoResponseDTO[]>(`${this.baseUrl}/empleados/${empleadoId}/operaciones`);
+    return this.apiClient.get<Page<OperacionEmpleadoResponseDTO>>(`${this.baseUrl}/empleados/${empleadoId}/operaciones`).pipe(
+      map(res => res.content)
+    );
   }
 }

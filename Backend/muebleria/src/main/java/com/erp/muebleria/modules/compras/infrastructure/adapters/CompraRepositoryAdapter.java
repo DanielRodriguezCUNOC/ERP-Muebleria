@@ -43,20 +43,6 @@ public class CompraRepositoryAdapter implements CompraRepositoryPort {
         CompraJpaEntity compraEntity = compraMapper.toEntity(compra);
         CompraJpaEntity savedCompra = compraRepository.save(compraEntity);
 
-        // * Generar Lotes para cada detalle guardado y persistirlos
-        List<LoteJpaEntity> lotes = savedCompra.getDetalles().stream().map(detalle -> {
-            LoteJpaEntity lote = new LoteJpaEntity();
-            lote.setDetalleCompraId(savedCompra.getId());
-            lote.setProductoId(detalle.getId().getProductoId());
-            lote.setCreadoEn(LocalDateTime.now());
-            lote.setCostoUnitario(detalle.getPrecioUnitario());
-            lote.setCantidadInicial(detalle.getCantidad());
-            lote.setCantidadDisponible(detalle.getCantidad());
-            return lote;
-        }).collect(Collectors.toList());
-
-        loteRepository.saveAll(lotes);
-
         // * Retornar el modelo de dominio
         return compraMapper.toDomain(savedCompra);
     }

@@ -10,7 +10,15 @@ export DB_PASSWORD="P@boomi79"
 # ==========================================
 # Variables de JWT
 # ==========================================
-export JWT_SECRET="$(cat ~/.muebleria_jwt_secret)"
+if [ -f "$HOME/.muebleria_jwt_secret" ]; then
+    export JWT_SECRET="$(cat "$HOME/.muebleria_jwt_secret")"
+elif [ -f "$(dirname "$0")/../../../muebleria_jwt_secret" ]; then
+    export JWT_SECRET="$(cat "$(dirname "$0")/../../../muebleria_jwt_secret")"
+elif [ -f "./muebleria_jwt_secret" ]; then
+    export JWT_SECRET="$(cat ./muebleria_jwt_secret)"
+else
+    export JWT_SECRET="muebleria_erp_super_secret_jwt_key_2026_default_fallback"
+fi
 export JWT_EXPIRATION="86400000"
 
 # ==========================================
@@ -21,7 +29,7 @@ set -e
 cd "$(dirname "$0")"
 
 echo "→ Limpiando target/ y compilando..."
-mvn clean compile -DskipTests
+./mvnw clean compile -DskipTests
 
 echo "→ Levantando Spring Boot..."
-mvn spring-boot:run -DskipTests
+./mvnw spring-boot:run -DskipTests

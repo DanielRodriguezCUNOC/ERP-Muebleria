@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class ConsultaResumenVentasDTO {
 
     @NotNull(message = "fechaInicio es requerida")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, fallbackPatterns = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss"})
     private LocalDateTime fechaInicio;
 
     @NotNull(message = "fechaFin es requerida")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, fallbackPatterns = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss"})
     private LocalDateTime fechaFin;
 
     private String agrupacion;

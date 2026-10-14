@@ -23,7 +23,18 @@ public class ConfiguracionRepositoryAdapter implements ConfiguracionSistemaRepos
 
     @Override
     public Optional<ConfiguracionSistema> obtenerConfiguracion() {
-        return repository.findById(1L).map(this::toDomain);
+        return repository.findById(1L)
+                .or(() -> repository.findAll().stream().findFirst())
+                .or(() -> {
+                    ConfiguracionSistemaJpaEntity def = new ConfiguracionSistemaJpaEntity();
+                    def.setTasaIva(new java.math.BigDecimal("0.1200"));
+                    def.setMetodoValoracion("PEPS");
+                    def.setResolucionFacturas("RES-2026-001");
+                    def.setSerieFacturas("A");
+                    def.setCorrelativoSiguiente(1L);
+                    return Optional.of(repository.save(def));
+                })
+                .map(this::toDomain);
     }
 
     @Override

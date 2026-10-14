@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportesService } from '../../services/reportes.service';
 import { ProductoCatalogoResponseDTO, MovimientoProductoResponseDTO } from '../../models/reportes.model';
@@ -7,7 +7,7 @@ import { ProductoCatalogoResponseDTO, MovimientoProductoResponseDTO } from '../.
 @Component({
   selector: 'app-movimientos-producto',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, DecimalPipe],
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './movimientos-producto.html'
 })
 export class MovimientosProductoComponent implements OnInit {

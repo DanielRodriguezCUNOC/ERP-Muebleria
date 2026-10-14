@@ -53,7 +53,7 @@ public class ReportesController {
     }
 
     @GetMapping("/top-productos-mas-ingresos")
-    @PreAuthorize("hasAnyAuthority('VENTAS_GESTIONAR')")
+    @PreAuthorize("hasAnyAuthority('REPORTES_VER', 'VENTAS_GESTIONAR')")
     @Operation(summary = "Obtener top productos por ingresos", description = "Retorna una lista con los productos que mas ingresos han generado, ordenados por monto acumulado.")
     public ResponseEntity<Page<TopProductosMasIngresos>> obtenerTopProductosMasIngresos(Pageable pageable) {
         Page<TopProductosMasIngresos> reporte = reporteTopProductosMasIngresosUseCase.ejecutar(pageable);
