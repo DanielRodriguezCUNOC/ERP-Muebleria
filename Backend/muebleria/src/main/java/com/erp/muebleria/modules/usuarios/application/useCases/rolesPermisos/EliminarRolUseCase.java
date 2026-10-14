@@ -1,6 +1,7 @@
 package com.erp.muebleria.modules.usuarios.application.useCases.rolesPermisos;
 
 import com.erp.muebleria.modules.common.domain.exceptions.RecursoNoEncontradoException;
+import com.erp.muebleria.modules.common.domain.exceptions.ReglaNegocioException;
 import com.erp.muebleria.modules.usuarios.domain.entities.Rol;
 import com.erp.muebleria.modules.usuarios.domain.ports.RolRepositoryPort;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class EliminarRolUseCase {
                 .orElseThrow(() -> new RecursoNoEncontradoException("El rol no existe"));
 
         if (rolRepository.tieneUsuariosAsociados(rolId)) {
-            throw new RecursoNoEncontradoException("No se puede desactivar el rol porque hay empleados activos asignados a él.");
+            throw new ReglaNegocioException("No se puede desactivar el rol porque hay empleados activos asignados a él.");
         }
 
         rol.desactivar();

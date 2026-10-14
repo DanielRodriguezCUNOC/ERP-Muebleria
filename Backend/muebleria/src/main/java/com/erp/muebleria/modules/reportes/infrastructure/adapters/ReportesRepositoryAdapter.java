@@ -63,22 +63,21 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
 
     @Override
     public List<VentasPorPeriodo> obtenerVentasPorPeriodo(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        // * Generar la consulta para obtener las ventas por periodo
         String sql = """
                 SELECT
-                TO_CHAR(DATE_TRUNC(?, fecha_venta), 'YYYY-MM-DD') AS periodo,
-                COALESCE(SUM(total), 0) AS total_ingresos,
-                COUNT(id) AS total_facturas
+                    DATE_TRUNC('day', fecha_venta) AS f_inicio,
+                    DATE_TRUNC('day', fecha_venta) + INTERVAL '1 day' - INTERVAL '1 second' AS f_fin,
+                    COALESCE(SUM(total), 0) AS total_ingresos,
+                    COUNT(id) AS total_facturas
                 FROM venta
                 WHERE fecha_venta BETWEEN ? AND ?
-                GROUP BY DATE_TRUNC(?, fecha_venta)
-                ORDER BY DATE_TRUNC(?, fecha_venta) ASC
+                GROUP BY DATE_TRUNC('day', fecha_venta)
+                ORDER BY DATE_TRUNC('day', fecha_venta) ASC
                  """;
 
-        // * Ejecutamos la consulta y mapeamos los resultados a objetos VentasPorPeriodo
         return jdbcTemplate.query(sql, (rs, rowNum) -> new VentasPorPeriodo(
-                fechaInicio,
-                fechaFin,
+                rs.getTimestamp("f_inicio").toLocalDateTime(),
+                rs.getTimestamp("f_fin").toLocalDateTime(),
                 rs.getBigDecimal("total_ingresos"),
                 rs.getInt("total_facturas")), fechaInicio, fechaFin);
     }
@@ -90,12 +89,13 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 p.id AS producto_id,
                 p.nombre,
                 SUM(dv.cantidad) AS cantidad_vendida,
+                SUM(dv.cantidad * dv.precio_unitario) AS ingresos_totales,
                 SUM(dv.cantidad * dv.precio_unitario) AS total_ingresos
                 FROM producto p
                 JOIN detalle_venta dv ON p.id = dv.producto_id
                 JOIN venta v ON dv.venta_id = v.id
                 GROUP BY p.id, p.nombre
-                ORDER BY total_ingresos DESC
+                ORDER BY ingresos_totales DESC
                 """;
 
         int limit = pageable.getPageSize();
@@ -122,6 +122,7 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
         String sql = """
                 SELECT
                 TO_CHAR(DATE_TRUNC('%s', fecha_venta), 'YYYY-MM-DD') AS periodo,
+                COALESCE(SUM(total), 0) AS ingresos_totales,
                 COALESCE(SUM(total), 0) AS total_ingresos,
                 COUNT(id) AS total_facturas
                 FROM venta
@@ -167,24 +168,28 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
     public Page<ReporteCompra> obtenerComprasPorRangoDeFechas(LocalDateTime fechaInicio,
             LocalDateTime fechaFin, Pageable pageable) {
         String sql = """
-                               SELECT
+                SELECT
                 c.id AS compra_id,
-                c.proveedor_id,
+                cp.proveedor_id,
                 p.nombre AS nombre_proveedor,
                 c.fecha_compra AS fecha,
-                c.total,
+                COALESCE(SUM(dc.costo_total), 0) AS total,
+                'COMPLETADA' AS estado
                 FROM compra c
-                JOIN proveedor p ON c.proveedor_id = p.id
+                JOIN compra_proveedor cp ON c.id = cp.compra_id
+                JOIN proveedor p ON cp.proveedor_id = p.id
+                LEFT JOIN detalle_compra dc ON c.id = dc.compra_id
                 WHERE c.fecha_compra BETWEEN ? AND ?
+                GROUP BY c.id, cp.proveedor_id, p.nombre, c.fecha_compra
                 ORDER BY c.fecha_compra DESC
-                                """;
+                """;
         int limit = pageable.getPageSize();
         int offset = (int) pageable.getOffset();
         String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
         java.util.List<ReporteCompra> content = jdbcTemplate.query(pagedSql, reporteCompraMapper, fechaInicio,
                 fechaFin);
 
-        String countSql = "SELECT COUNT(*) FROM compra c WHERE c.fecha_compra BETWEEN ? AND ?";
+        String countSql = "SELECT COUNT(DISTINCT c.id) FROM compra c WHERE c.fecha_compra BETWEEN ? AND ?";
         long total = jdbcTemplate.queryForObject(countSql, Long.class, fechaInicio, fechaFin);
 
         return new org.springframework.data.domain.PageImpl<>(content, pageable, total);
@@ -200,12 +205,12 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
                 p.nombre AS nombre_proveedor,
                 c.fecha_compra AS fecha,
                 COALESCE(SUM(dc.costo_total), 0) AS total,
-                'ACTIVA' AS estado
+                'COMPLETADA' AS estado
                 FROM compra c
                 JOIN compra_proveedor cp ON c.id = cp.compra_id
                 JOIN proveedor p ON cp.proveedor_id = p.id
                 LEFT JOIN detalle_compra dc ON c.id = dc.compra_id
-                WHERE c.fecha_compra BETWEEN ? AND ?
+                WHERE cp.proveedor_id = ?
                 GROUP BY c.id, cp.proveedor_id, p.nombre, c.fecha_compra
                 ORDER BY c.fecha_compra DESC
                 """;
@@ -214,7 +219,7 @@ public class ReportesRepositoryAdapter implements ReportesGerencialesRepositoryP
         String pagedSql = sql + " LIMIT " + limit + " OFFSET " + offset;
         java.util.List<ReporteCompra> content = jdbcTemplate.query(pagedSql, reporteCompraMapper, proveedorId);
 
-        String countSql = "SELECT COUNT(*) FROM compra c WHERE c.proveedor_id = ?";
+        String countSql = "SELECT COUNT(DISTINCT c.id) FROM compra c JOIN compra_proveedor cp ON c.id = cp.compra_id WHERE cp.proveedor_id = ?";
         long total = jdbcTemplate.queryForObject(countSql, Long.class, proveedorId);
 
         return new org.springframework.data.domain.PageImpl<>(content, pageable, total);

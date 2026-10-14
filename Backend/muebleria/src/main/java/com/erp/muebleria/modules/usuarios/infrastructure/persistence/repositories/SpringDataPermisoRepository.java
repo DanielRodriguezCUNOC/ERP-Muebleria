@@ -10,13 +10,17 @@ import java.util.List;
 
 public interface SpringDataPermisoRepository extends JpaRepository<PermisoJpaEntity, Long> {
 
-    @Query(value = """
-            SELECT DISTINCT p.id, p.codigo, p.descripcion 
-            FROM permiso p
-            JOIN rol_permiso rp ON p.id = rp.permiso_id
-            JOIN empleado e ON e.rol_id = rp.rol_id
-            WHERE e.id = :usuarioId
-            """, nativeQuery = true)
+    @Query("""
+            SELECT new com.erp.muebleria.modules.usuarios.application.dto.PermisoResponseDTO(
+                p.id,
+                p.nombre,
+                p.descripcion
+            )
+            FROM UsuarioJpaEntity u
+            JOIN u.rol r
+            JOIN r.permisos p
+            WHERE u.id = :usuarioId
+            """)
     List<PermisoResponseDTO> obtenerPermisosPorUsuarioId(@Param("usuarioId") Long usuarioId);
 
     @Query("""

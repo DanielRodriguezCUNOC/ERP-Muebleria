@@ -33,7 +33,7 @@ export class OperacionesEmpleadoComponent implements OnInit {
     if (!q) return this.empleados();
 
     return this.empleados().filter(e =>
-      e.name.toLowerCase().includes(q) ||
+      e.nombre.toLowerCase().includes(q) ||
       e.usuario.toLowerCase().includes(q) ||
       (e.nombreRol && e.nombreRol.toLowerCase().includes(q))
     );
@@ -79,7 +79,7 @@ export class OperacionesEmpleadoComponent implements OnInit {
 
   seleccionarEmpleado(empleado: UsuarioResponseDTO): void {
     this.empleadoSeleccionado.set(empleado);
-    this.busquedaEmpleado.set(`${empleado.name} (@${empleado.usuario})`);
+    this.busquedaEmpleado.set(`${empleado.nombre} (@${empleado.usuario})`);
     this.showDropdown.set(false);
     this.cargarBitacora(empleado.id);
   }

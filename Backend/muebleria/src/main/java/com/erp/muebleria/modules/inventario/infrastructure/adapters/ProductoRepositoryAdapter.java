@@ -24,7 +24,7 @@ public class ProductoRepositoryAdapter implements ProductoRepositoryPort {
     @Override
     public List<ProductoCatalogoResponseDTO> consultarCatalogo(FiltroCatalogoProductoDTO filtro) {
         StringBuilder sql = new StringBuilder(
-                "SELECT p.id, p.sku, p.nombre, p.descripcion, p.categoria, p.precio_venta, p.activo, " +
+                "SELECT p.id, p.sku, p.nombre, CAST('' AS VARCHAR) AS descripcion, p.categoria, p.precio AS precio_venta, p.activo, " +
                         "COALESCE(i.existencia, 0) AS existencia_total " +
                         "FROM producto p " +
                         "LEFT JOIN inventario i ON p.id = i.producto_id " +
@@ -61,7 +61,7 @@ public class ProductoRepositoryAdapter implements ProductoRepositoryPort {
                         "l.id AS lote_id, l.cantidad_inicial, l.cantidad_disponible, l.costo_unitario, l.creado_en " +
                         "FROM producto p " +
                         "LEFT JOIN inventario i ON p.id = i.producto_id " +
-                        "LEFT JOIN lote l ON p.id = l.product_id AND l.cantidad_disponible > 0 " +
+                        "LEFT JOIN lote l ON p.id = l.producto_id AND l.cantidad_disponible > 0 " +
                         "WHERE p.id = :productoId " +
                         "ORDER BY l.creado_en ASC";
 
